@@ -425,7 +425,7 @@
             position: relative;
             height: 100vh;
             min-height: 500px;
-            max-height: 800px;
+            max-height: none;
             overflow: hidden;
         }
 
@@ -434,6 +434,12 @@
                 height: -webkit-fill-available;
             }
         }
+
+        @media (max-width: 768px) {
+        .cards-container {
+            margin-top: 30px;  
+        }
+}
 
         .hero-slider {
             position: relative;
@@ -1598,14 +1604,15 @@
         }
 
         /* ===== WHATSAPP FLOAT ===== */
+
         .whatsapp-float {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 20px;
+            right: 20px;
             background: #25D366;
             color: white;
-            width: 60px;
-            height: 60px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -1617,12 +1624,29 @@
         }
 
         .whatsapp-float i {
-            font-size: 2rem;
+            font-size: 1.8rem;
         }
 
         .whatsapp-float:hover {
             transform: scale(1.1);
             box-shadow: var(--shadow-xl);
+        }
+
+        body.menu-open .whatsapp-float {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        @media (max-width: 480px) {
+            .whatsapp-float {
+                bottom: 15px;
+                right: 15px;
+                width: 48px;
+                height: 48px;
+            }
+            .whatsapp-float i {
+                font-size: 1.5rem;
+            }
         }
 
         /* ===== MODALS ===== */
@@ -2260,10 +2284,12 @@
         
         const hamburger = document.getElementById('hamburger');
         const navMenu = document.getElementById('navMenu');
+
         if (hamburger) {
             hamburger.addEventListener('click', () => {
                 hamburger.classList.toggle('active');
                 navMenu.classList.toggle('active');
+                
                 if (navMenu.classList.contains('active')) {
                     document.body.classList.add('menu-open');
                 } else {
