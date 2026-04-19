@@ -1603,52 +1603,6 @@
             gap: 16px;
         }
 
-        /* ===== WHATSAPP FLOAT ===== */
-
-        .whatsapp-float {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #25D366;
-            color: white;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            box-shadow: var(--shadow-lg);
-            transition: all var(--transition-base);
-            z-index: 99;
-        }
-
-        .whatsapp-float i {
-            font-size: 1.8rem;
-        }
-
-        .whatsapp-float:hover {
-            transform: scale(1.1);
-            box-shadow: var(--shadow-xl);
-        }
-
-        body.menu-open .whatsapp-float {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        @media (max-width: 480px) {
-            .whatsapp-float {
-                bottom: 15px;
-                right: 15px;
-                width: 48px;
-                height: 48px;
-            }
-            .whatsapp-float i {
-                font-size: 1.5rem;
-            }
-        }
-
         /* ===== MODALS ===== */
         .modal {
             display: none;
@@ -1805,11 +1759,6 @@
             </div>
         </div>
     </header>
-
-    <!-- WHATSAPP FLOAT -->
-    <a href="https://wa.me/5583999999999" class="whatsapp-float" id="whatsappLink" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
-        <i class="fab fa-whatsapp"></i>
-    </a>
 
     <main>
         <!-- HERO SLIDER -->
@@ -2246,7 +2195,6 @@
             document.getElementById('contactEmailLink').href = `mailto:${email}`;
             document.getElementById('contactEmailLink').textContent = email;
             document.getElementById('contactAddress').textContent = address;
-            document.getElementById('whatsappLink').href = `https://wa.me/${whatsapp}?text=Olá!%20Preciso%20de%20informações%20sobre%20os%20serviços%20da%20Araras%20Negras.`;
         }
         
         function filterNews(filter) { currentNewsFilter = filter; renderNews(); document.querySelectorAll('.filter-btn').forEach(btn => { btn.classList.toggle('active', btn.dataset.filter === filter); }); }
