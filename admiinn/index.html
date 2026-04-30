@@ -1820,1351 +1820,466 @@
     <div id="confirmModal" class="confirm-modal"><div class="confirm-modal-content"><h3><i class="fas fa-exclamation-triangle"></i> Confirmar</h3><p id="confirmMessage">Tem certeza que deseja excluir este item?</p><div class="confirm-modal-buttons"><button id="confirmYes" class="btn-danger">Sim, excluir</button><button id="confirmNo" class="btn-secondary">Cancelar</button></div></div></div>
 
     <script>
-        // ============================================
-        // LÓGICA DO SISTEMA ANTIGO (100% MANTIDA)
-        // ============================================
+    // ===== CONFIGURAÇÃO DA API =====
+    const API_URL = 'https://araras-negras-api.onrender.com/api';
+    let authToken = localStorage.getItem('token');
+    let currentUser = null;
+    let siteData = {
+        servicos: [],
+        depoimentos: [],
+        noticias: [],
+        galeria: [],
+        home: { slides: [] },
+        institucional: {},
+        config: {}
+    };
+
+    // ===== FUNÇÕES AUXILIARES =====
+    function escapeHtml(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `toast-message ${type}`;
+        toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${escapeHtml(message)}`;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.animation = 'slideOutRight 0.3s ease';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // ===== REQUISIÇÕES API =====
+    async function apiRequest(endpoint, method = 'GET', body = null) {
+        const token = localStorage.getItem('token');
+        const options = {
+            method,
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth-token': token
+            }
+        };
         
-        (function() {
-            'use strict';
-
-            const STORAGE_KEYS = {
-                USERS: 'ararasnegras_users_v2',
-                SESSION: 'ararasnegras_session_v2',
-                DATA: 'ararasnegras_public_data',
-                SIDEBAR: 'sidebar_collapsed_v2'
-            };
-
-            const DEFAULT_ADMIN = {
-                id: Date.now(),
-                name: "Administrador",
-                email: "admin@ararasnegras.com.br",
-                password: "araras2024",
-                avatar: "",
-                createdAt: new Date().toISOString()
-            };
-
-            const DEFAULT_SITE_DATA = {
-                home: { slides: [] },
-                institucional: {
-                    title: "Araras Negras - Bombeiros Civis de Araruna",
-                    highlight: "Nasceu do sonho de um grupo de profissionais comprometidos com a segurança e o bem-estar da comunidade de Araruna.",
-                    text: "Somos uma equipe de Bombeiros Civis que atua há mais de 15 anos na prevenção e combate a incêndios, atendimento pré-hospitalar e resgate em situações de emergência.",
-                    mission: "Proteger vidas e patrimônios com profissionalismo, ética e respeito, atuando na prevenção e resposta a emergências.",
-                    vision: "Ser referência em segurança e atendimento de emergências na região, reconhecida pela excelência e comprometimento.",
-                    values: "Coragem, disciplina, respeito à vida, trabalho em equipe, melhoria contínua e amor à comunidade.",
-                    videoUrl: "6eu824WqEvw",
-                    videoThumb: ""
-                },
-                noticias: [],
-                galeria: [],
-                servicos: [
-                    { icon: "fa-fire", title: "Combate a Incêndios", description: "Atuação rápida e eficiente no combate a princípios de incêndio." },
-                    { icon: "fa-heartbeat", title: "Primeiros Socorros", description: "Atendimento pré-hospitalar qualificado." },
-                    { icon: "fa-mountain", title: "Resgate em Altura", description: "Operações de resgate em locais de difícil acesso." },
-                    { icon: "fa-chalkboard-teacher", title: "Treinamentos", description: "Capacitação para empresas e comunidade." }
-                ],
-                depoimentos: [],
-                config: {
-                    emergencyPhone: "(83) 99999-9999",
-                    contactEmail: "contato@ararasnegras.com.br",
-                    contactAddress: "Rua Principal, 123 - Centro, Araruna - PB",
-                    whatsappNumber: "5583999999999"
-                }
-            };
-
-            let currentUser = null;
-            let pendingDeleteCallback = null;
-            let editingServiceIndex = null;
-            let editingSlideIndex = null;
-            let editingTestimonialIndex = null;
-            let registerAvatarData = null;
-            let settingsAvatarData = null;
-            let siteData = { ...DEFAULT_SITE_DATA };
-
-            function escapeHtml(str) {
-                if (!str) return '';
-                const div = document.createElement('div');
-                div.textContent = str;
-                return div.innerHTML;
+        if (body) {
+            options.body = JSON.stringify(body);
+        }
+        
+        try {
+            const response = await fetch(`${API_URL}${endpoint}`, options);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
             }
+            return await response.json();
+        } catch (error) {
+            console.error('API Error:', error);
+            throw error;
+        }
+    }
 
-            function showToast(message, type = 'success') {
-                const toast = document.createElement('div');
-                toast.className = `toast-message ${type}`;
-                toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${escapeHtml(message)}`;
-                document.body.appendChild(toast);
-                setTimeout(() => {
-                    toast.style.animation = 'slideOutRight 0.3s ease';
-                    setTimeout(() => toast.remove(), 300);
-                }, 3000);
-            }
-
-            function validateEmail(email) {
-                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-            }
-
-            function validateImageFile(file) {
-                const maxSize = 2 * 1024 * 1024;
-                const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-                if (!allowedTypes.includes(file.type)) {
-                    showToast('Formato não suportado. Use JPEG, PNG ou WEBP.', 'error');
-                    return false;
-                }
-                if (file.size > maxSize) {
-                    showToast('A imagem deve ter no máximo 2MB!', 'error');
-                    return false;
-                }
+    // ===== LOGIN =====
+    async function loginUser(email, password) {
+        try {
+            const response = await fetch(`${API_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                authToken = data.token;
+                currentUser = data.user;
+                updateUserInterface();
+                await loadAllData();
                 return true;
             }
-
-            function fileToBase64(file) {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = () => resolve(reader.result);
-                    reader.onerror = error => reject(error);
-                });
-            }
-
-            function updateAvatarPreview(previewElement, imageData) {
-                if (!previewElement) return;
-                if (imageData) {
-                    previewElement.innerHTML = `<img src="${imageData}" alt="Avatar">`;
-                } else {
-                    previewElement.innerHTML = '<i class="fas fa-user-circle"></i>';
-                }
-            }
-
-            function loadUsers() {
-                const stored = localStorage.getItem(STORAGE_KEYS.USERS);
-                if (!stored) {
-                    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify([DEFAULT_ADMIN]));
-                    return [DEFAULT_ADMIN];
-                }
-                return JSON.parse(stored);
-            }
-
-            function saveUsers(users) {
-                localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
-            }
-
-            function hashPassword(password) {
-                let hash = 0;
-                for (let i = 0; i < password.length; i++) {
-                    const char = password.charCodeAt(i);
-                    hash = ((hash << 5) - hash) + char;
-                    hash = hash & hash;
-                }
-                return hash.toString(36) + password.length.toString(36);
-            }
-
-            function loginUser(email, password) {
-                const users = loadUsers();
-                const hashedInput = hashPassword(password);
-                const user = users.find(u => u.email === email && u.password === hashedInput);
-                if (user) {
-                    currentUser = {
-                        id: user.id,
-                        name: user.name,
-                        email: user.email,
-                        avatar: user.avatar,
-                        createdAt: user.createdAt
-                    };
-                    sessionStorage.setItem(STORAGE_KEYS.SESSION, JSON.stringify(currentUser));
-                    updateUserInterface();
-                    return true;
-                }
-                return false;
-            }
-
-            function updateUserProfile(userId, updates) {
-                const users = loadUsers();
-                const index = users.findIndex(u => u.id === userId);
-                if (index !== -1) {
-                    if (updates.password) {
-                        updates.password = hashPassword(updates.password);
-                    }
-                    users[index] = { ...users[index], ...updates };
-                    saveUsers(users);
-                    if (currentUser && currentUser.id === userId) {
-                        currentUser = {
-                            id: users[index].id,
-                            name: users[index].name,
-                            email: users[index].email,
-                            avatar: users[index].avatar,
-                            createdAt: users[index].createdAt
-                        };
-                        sessionStorage.setItem(STORAGE_KEYS.SESSION, JSON.stringify(currentUser));
-                        updateUserInterface();
-                    }
-                    return true;
-                }
-                return false;
-            }
-
-            function resetUserPassword(email, newPassword) {
-                const users = loadUsers();
-                const index = users.findIndex(u => u.email === email);
-                if (index !== -1) {
-                    users[index].password = hashPassword(newPassword);
-                    saveUsers(users);
-                    return true;
-                }
-                return false;
-            }
-
-            function registerUser(name, email, password, avatarBase64) {
-                const users = loadUsers();
-                if (users.find(u => u.email === email)) {
-                    return { success: false, message: "E-mail já cadastrado!" };
-                }
-                if (name.length < 3) {
-                    return { success: false, message: "Nome deve ter pelo menos 3 caracteres!" };
-                }
-                if (!validateEmail(email)) {
-                    return { success: false, message: "E-mail inválido!" };
-                }
-                if (password.length < 6) {
-                    return { success: false, message: "Senha deve ter pelo menos 6 caracteres!" };
-                }
-                const newUser = {
-                    id: Date.now(),
-                    name: name.trim(),
-                    email: email.trim(),
-                    password: hashPassword(password),
-                    avatar: avatarBase64 || "",
-                    createdAt: new Date().toISOString()
-                };
-                users.push(newUser);
-                saveUsers(users);
-                return { success: true, user: newUser };
-            }
-
-            function checkSession() {
-                const saved = sessionStorage.getItem(STORAGE_KEYS.SESSION);
-                if (saved) {
-                    currentUser = JSON.parse(saved);
-                    updateUserInterface();
-                    document.getElementById('loginContainer').style.display = 'none';
-                    document.getElementById('adminContainer').style.display = 'flex';
-                    loadData();
-                    renderAll();
-                    return true;
-                }
-                return false;
-            }
-
-            function logout() {
-                sessionStorage.removeItem(STORAGE_KEYS.SESSION);
-                currentUser = null;
-                document.getElementById('adminContainer').style.display = 'none';
-                document.getElementById('loginContainer').style.display = 'flex';
-                showToast('Logout realizado com sucesso!');
-            }
-
-            function updateUserInterface() {
-                if (!currentUser) return;
-                const avatarHeader = document.getElementById('userAvatarHeader');
-                const nameHeader = document.getElementById('userNameHeader');
-                if (avatarHeader) {
-                    if (currentUser.avatar) {
-                        avatarHeader.innerHTML = `<img src="${currentUser.avatar}" alt="Avatar de ${currentUser.name}">`;
-                    } else {
-                        avatarHeader.innerHTML = '<i class="fas fa-user-circle"></i>';
-                    }
-                }
-                if (nameHeader) {
-                    nameHeader.textContent = currentUser.name.split(' ')[0];
-                }
-            }
-
-            function saveData() {
-                try {
-                    localStorage.setItem(STORAGE_KEYS.DATA, JSON.stringify(siteData));
-                    updateStats();
-                    showToast('Dados salvos com sucesso!');
-                } catch(e) {
-                    showToast('Erro ao salvar dados!', 'error');
-                }
-            }
-
-            function loadData() {
-                try {
-                    const saved = localStorage.getItem(STORAGE_KEYS.DATA);
-                    if (saved) {
-                        const parsed = JSON.parse(saved);
-                        siteData = {
-                            ...DEFAULT_SITE_DATA,
-                            ...parsed,
-                            home: { ...DEFAULT_SITE_DATA.home, ...parsed.home },
-                            institucional: { ...DEFAULT_SITE_DATA.institucional, ...parsed.institucional },
-                            config: { ...DEFAULT_SITE_DATA.config, ...parsed.config }
-                        };
-                    }
-                } catch(e) {
-                    siteData = { ...DEFAULT_SITE_DATA };
-                }
-                updateStats();
-            }
-
-            function updateStats() {
-                const elements = {
-                    statSlides: siteData.home.slides.length,
-                    statNoticias: siteData.noticias.length,
-                    statGaleria: siteData.galeria.length,
-                    statServicos: siteData.servicos.length,
-                    statDepoimentos: siteData.depoimentos.length
-                };
-                for (const [id, value] of Object.entries(elements)) {
-                    const el = document.getElementById(id);
-                    if (el) el.textContent = value;
-                }
-            }
-
-            window.showCardsView = function() {
-                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-                const cardsView = document.getElementById('cardsView');
-                if (cardsView) cardsView.style.display = 'block';
-                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                const homeLink = document.querySelector('.nav-link[data-panel="home"]');
-                if (homeLink) homeLink.classList.add('active');
-                document.getElementById('pageTitle').textContent = 'Dashboard';
-            };
-
-            function showPanel(panelId, panelName) {
-                const cardsView = document.getElementById('cardsView');
-                if (cardsView) cardsView.style.display = 'none';
-                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-                const panel = document.getElementById(panelId);
-                if (panel) panel.classList.add('active');
-                document.getElementById('pageTitle').textContent = panelName;
-            }
-
-            function renderSlides() {
-                const container = document.getElementById('sliderList');
-                if (!container) return;
-                if (!siteData.home.slides.length) {
-                    container.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--gray-500);"><i class="fas fa-info-circle"></i> Nenhum slide cadastrado. Clique em "Adicionar Novo Slide" para começar.</p>';
-                    return;
-                }
-                container.innerHTML = siteData.home.slides.map((slide, index) => `
-                    <div class="slider-item">
-                        <img src="${escapeHtml(slide.image)}" alt="Slide ${index+1}" loading="lazy" onerror="this.src='https://placehold.co/100x60/cccccc/666666?text=Erro'">
-                        <div class="info">
-                            <strong>${escapeHtml(slide.tagline || 'Sem título')}</strong>
-                            <p>${escapeHtml(slide.title || '')}</p>
-                            <small>${escapeHtml(slide.subtitle || '')}</small>
-                        </div>
-                        <div class="actions">
-                            <button class="btn-edit" onclick="window.openEditSlideModal(${index})">Editar</button>
-                            <button class="btn-delete" onclick="window.deleteSlide(${index})">Excluir</button>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            window.addSlide = function(slide) {
-                siteData.home.slides.push(slide);
-                saveData();
-                renderSlides();
-                updateStats();
-                showToast('Slide adicionado com sucesso!');
-            };
-
-            window.deleteSlide = function(index) {
-                pendingDeleteCallback = () => {
-                    siteData.home.slides.splice(index, 1);
-                    saveData();
-                    renderSlides();
-                    updateStats();
-                    showToast('Slide excluído!');
-                    document.getElementById('confirmModal')?.classList.remove('show');
-                };
-                document.getElementById('confirmMessage').textContent = 'Tem certeza que deseja excluir este slide?';
-                document.getElementById('confirmModal')?.classList.add('show');
-            };
-
-            window.openEditSlideModal = function(index) {
-                const slide = siteData.home.slides[index];
-                editingSlideIndex = index;
-                document.getElementById('editSlideTagline').value = slide.tagline || '';
-                document.getElementById('editSlideTitle').value = slide.title || '';
-                document.getElementById('editSlideSubtitle').value = slide.subtitle || '';
-                const preview = document.getElementById('editSlideImagePreview');
-                if (preview && slide.image) {
-                    preview.src = slide.image;
-                    preview.classList.add('active');
-                }
-                document.getElementById('editSlideModal').classList.add('show');
-            };
-
-            function saveSlideEdit() {
-                const newTagline = document.getElementById('editSlideTagline').value;
-                const newTitle = document.getElementById('editSlideTitle').value;
-                const newSubtitle = document.getElementById('editSlideSubtitle').value;
-                const newImage = document.getElementById('editSlideImagePreview')?.src || siteData.home.slides[editingSlideIndex]?.image;
-                siteData.home.slides[editingSlideIndex] = {
-                    ...siteData.home.slides[editingSlideIndex],
-                    tagline: newTagline,
-                    title: newTitle,
-                    subtitle: newSubtitle,
-                    image: newImage
-                };
-                saveData();
-                renderSlides();
-                showToast('Slide atualizado!');
-                document.getElementById('editSlideModal').classList.remove('show');
-            }
-
-            function loadInstitutional() {
-                document.getElementById('instTitle').value = siteData.institucional.title || '';
-                document.getElementById('instHighlight').value = siteData.institucional.highlight || '';
-                document.getElementById('instText').value = siteData.institucional.text || '';
-                document.getElementById('instMission').value = siteData.institucional.mission || '';
-                document.getElementById('instVision').value = siteData.institucional.vision || '';
-                document.getElementById('instValues').value = siteData.institucional.values || '';
-                document.getElementById('instVideoUrl').value = siteData.institucional.videoUrl || '';
-                const preview = document.getElementById('instVideoPreview');
-                if (preview && siteData.institucional.videoThumb) {
-                    preview.src = siteData.institucional.videoThumb;
-                    preview.classList.add('active');
-                }
-            }
-
-            function saveInstitutional() {
-                siteData.institucional = {
-                    title: document.getElementById('instTitle')?.value || '',
-                    highlight: document.getElementById('instHighlight')?.value || '',
-                    text: document.getElementById('instText')?.value || '',
-                    mission: document.getElementById('instMission')?.value || '',
-                    vision: document.getElementById('instVision')?.value || '',
-                    values: document.getElementById('instValues')?.value || '',
-                    videoUrl: document.getElementById('instVideoUrl')?.value || '',
-                    videoThumb: siteData.institucional.videoThumb
-                };
-                saveData();
-                showToast('Conteúdo institucional salvo!');
-            }
-
-            function renderNews() {
-                const tbody = document.getElementById('newsList');
-                if (!tbody) return;
-                if (!siteData.noticias.length) {
-                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 40px; color: var(--gray-500);">Nenhuma notícia cadastrada</td></tr>';
-                    return;
-                }
-                tbody.innerHTML = siteData.noticias.map((n, i) => `
-                    <tr>
-                        <td><strong>${escapeHtml(n.title.substring(0, 50))}${n.title.length > 50 ? '...' : ''}</strong></td>
-                        <td><span style="background: var(--primary-light); color: var(--primary-dark); padding: 4px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 600;">${escapeHtml(n.category)}</span></td>
-                        <td>${escapeHtml(n.date)}</td>
-                        <td>
-                            <button class="btn-edit" onclick="window.editNews(${i})">Editar</button>
-                            <button class="btn-delete" onclick="window.deleteNews(${i})">Excluir</button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
-            window.addNews = function(news) {
-                siteData.noticias.unshift(news);
-                saveData();
-                renderNews();
-                updateStats();
-                showToast('Notícia publicada com sucesso!');
-            };
-
-            window.deleteNews = function(index) {
-                pendingDeleteCallback = () => {
-                    siteData.noticias.splice(index, 1);
-                    saveData();
-                    renderNews();
-                    updateStats();
-                    showToast('Notícia excluída!');
-                    document.getElementById('confirmModal')?.classList.remove('show');
-                };
-                document.getElementById('confirmMessage').textContent = 'Tem certeza que deseja excluir esta notícia?';
-                document.getElementById('confirmModal')?.classList.add('show');
-            };
-
-            window.editNews = function(index) {
-                const news = siteData.noticias[index];
-                document.getElementById('newsTitle').value = news.title;
-                document.getElementById('newsDescription').value = news.description;
-                document.getElementById('newsCategory').value = news.category;
-                document.getElementById('newsAuthor').value = news.author || '';
-                if (news.image) {
-                    const preview = document.getElementById('newsImagePreview');
-                    if (preview) {
-                        preview.src = news.image;
-                        preview.classList.add('active');
-                    }
-                }
-                siteData.noticias.splice(index, 1);
-                renderNews();
-                showToast('Edite a notícia e clique em Publicar para salvar as alterações.');
-                document.getElementById('addNewsForm').scrollIntoView({ behavior: 'smooth' });
-            };
-
-            function renderGallery() {
-                const container = document.getElementById('galleryList');
-                if (!container) return;
-                if (!siteData.galeria.length) {
-                    container.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--gray-500);"><i class="fas fa-info-circle"></i> Nenhuma foto na galeria</p>';
-                    return;
-                }
-                container.innerHTML = siteData.galeria.map((item, i) => `
-                    <div class="gallery-item-admin">
-                        <img src="${escapeHtml(item.src)}" alt="${escapeHtml(item.title)}" loading="lazy" onerror="this.src='https://placehold.co/180x140/cccccc/666666?text=Erro'">
-                        <div class="info">
-                            <p><strong>${escapeHtml(item.title)}</strong></p>
-                            <p style="font-size: 0.7rem; color: var(--gray-500);">${escapeHtml(item.category)}</p>
-                            <button class="btn-delete" onclick="window.deleteGalleryItem(${i})">Excluir</button>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            window.addGalleryItem = function(item) {
-                siteData.galeria.push(item);
-                saveData();
-                renderGallery();
-                updateStats();
-                showToast('Foto adicionada à galeria!');
-            };
-
-            window.deleteGalleryItem = function(index) {
-                pendingDeleteCallback = () => {
-                    siteData.galeria.splice(index, 1);
-                    saveData();
-                    renderGallery();
-                    updateStats();
-                    showToast('Foto excluída!');
-                    document.getElementById('confirmModal')?.classList.remove('show');
-                };
-                document.getElementById('confirmMessage').textContent = 'Tem certeza que deseja excluir esta foto?';
-                document.getElementById('confirmModal')?.classList.add('show');
-            };
-
-            function renderServices() {
-                const container = document.getElementById('servicesList');
-                if (!container) return;
-                container.innerHTML = siteData.servicos.map((s, i) => `
-                    <div class="service-item">
-                        <h4><i class="fas ${s.icon}"></i> ${escapeHtml(s.title)}</h4>
-                        <p>${escapeHtml(s.description.substring(0, 100))}${s.description.length > 100 ? '...' : ''}</p>
-                        <div class="service-actions">
-                            <button class="btn-edit" onclick="window.openEditServiceModal(${i})">Editar</button>
-                            <button class="btn-delete" onclick="window.deleteService(${i})">Excluir</button>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            window.openEditServiceModal = function(index) {
-                const service = siteData.servicos[index];
-                editingServiceIndex = index;
-                document.getElementById('editServiceIcon').value = service.icon;
-                document.getElementById('editServiceTitle').value = service.title;
-                document.getElementById('editServiceDescription').value = service.description;
-                document.getElementById('serviceModal')?.classList.add('show');
-            };
-
-            function saveServiceEdit() {
-                const newIcon = document.getElementById('editServiceIcon').value;
-                const newTitle = document.getElementById('editServiceTitle').value;
-                const newDescription = document.getElementById('editServiceDescription').value;
-                if (!newIcon || !newTitle || !newDescription) {
-                    showToast('Preencha todos os campos!', 'error');
-                    return;
-                }
-                siteData.servicos[editingServiceIndex] = {
-                    icon: newIcon,
-                    title: newTitle,
-                    description: newDescription
-                };
-                saveData();
-                renderServices();
-                updateStats();
-                showToast('Serviço atualizado!');
-                document.getElementById('serviceModal')?.classList.remove('show');
-            }
-
-            window.openAddServiceModal = function() {
-                document.getElementById('addServiceIcon').value = '';
-                document.getElementById('addServiceTitle').value = '';
-                document.getElementById('addServiceDescription').value = '';
-                document.getElementById('addServiceModal')?.classList.add('show');
-            };
-
-            function addServiceFromModal() {
-                const newIcon = document.getElementById('addServiceIcon').value;
-                const newTitle = document.getElementById('addServiceTitle').value;
-                const newDescription = document.getElementById('addServiceDescription').value;
-                if (!newIcon || !newTitle || !newDescription) {
-                    showToast('Preencha todos os campos!', 'error');
-                    return;
-                }
-                siteData.servicos.push({
-                    icon: newIcon,
-                    title: newTitle,
-                    description: newDescription
-                });
-                saveData();
-                renderServices();
-                updateStats();
-                showToast('Serviço adicionado!');
-                document.getElementById('addServiceModal')?.classList.remove('show');
-            }
-
-            window.deleteService = function(index) {
-                pendingDeleteCallback = () => {
-                    siteData.servicos.splice(index, 1);
-                    saveData();
-                    renderServices();
-                    updateStats();
-                    showToast('Serviço excluído!');
-                    document.getElementById('confirmModal')?.classList.remove('show');
-                };
-                document.getElementById('confirmMessage').textContent = 'Tem certeza que deseja excluir este serviço?';
-                document.getElementById('confirmModal')?.classList.add('show');
-            };
-
-            function renderTestimonials() {
-                const tbody = document.getElementById('testimonialsList');
-                if (!tbody) return;
-                if (!siteData.depoimentos.length) {
-                    tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 40px; color: var(--gray-500);">Nenhum depoimento cadastrado</td></tr>';
-                    return;
-                }
-                tbody.innerHTML = siteData.depoimentos.map((t, i) => `
-                    <tr>
-                        <td><strong>${escapeHtml(t.name)}</strong><br><small style="color: var(--gray-500);">${escapeHtml(t.role)}</small></td>
-                        <td>${escapeHtml(t.text.substring(0, 80))}${t.text.length > 80 ? '...' : ''}</td>
-                        <td>
-                            <button class="btn-edit" onclick="window.openEditTestimonialModal(${i})">Editar</button>
-                            <button class="btn-delete" onclick="window.deleteTestimonial(${i})">Excluir</button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
-            window.openEditTestimonialModal = function(index) {
-                const test = siteData.depoimentos[index];
-                editingTestimonialIndex = index;
-                document.getElementById('editTestimonialName').value = test.name;
-                document.getElementById('editTestimonialRole').value = test.role;
-                document.getElementById('editTestimonialText').value = test.text;
-                document.getElementById('editTestimonialModal').classList.add('show');
-            };
-
-            function saveTestimonialEdit() {
-                const newName = document.getElementById('editTestimonialName').value;
-                const newRole = document.getElementById('editTestimonialRole').value;
-                const newText = document.getElementById('editTestimonialText').value;
-                siteData.depoimentos[editingTestimonialIndex] = {
-                    ...siteData.depoimentos[editingTestimonialIndex],
-                    name: newName,
-                    role: newRole,
-                    text: newText
-                };
-                saveData();
-                renderTestimonials();
-                showToast('Depoimento atualizado!');
-                document.getElementById('editTestimonialModal').classList.remove('show');
-            }
-
-            window.addTestimonial = function(test) {
-                siteData.depoimentos.push(test);
-                saveData();
-                renderTestimonials();
-                updateStats();
-                showToast('Depoimento adicionado!');
-            };
-
-            window.deleteTestimonial = function(index) {
-                pendingDeleteCallback = () => {
-                    siteData.depoimentos.splice(index, 1);
-                    saveData();
-                    renderTestimonials();
-                    updateStats();
-                    showToast('Depoimento excluído!');
-                    document.getElementById('confirmModal')?.classList.remove('show');
-                };
-                document.getElementById('confirmMessage').textContent = 'Tem certeza que deseja excluir este depoimento?';
-                document.getElementById('confirmModal')?.classList.add('show');
-            };
-
-            function loadSettings() {
-                document.getElementById('emergencyPhone').value = siteData.config.emergencyPhone || '';
-                document.getElementById('contactEmail').value = siteData.config.contactEmail || '';
-                document.getElementById('contactAddress').value = siteData.config.contactAddress || '';
-                document.getElementById('whatsappNumber').value = siteData.config.whatsappNumber || '';
-            }
-
-            function saveSettings() {
-                siteData.config = {
-                    emergencyPhone: document.getElementById('emergencyPhone').value,
-                    contactEmail: document.getElementById('contactEmail').value,
-                    contactAddress: document.getElementById('contactAddress').value,
-                    whatsappNumber: document.getElementById('whatsappNumber').value
-                };
-                saveData();
-                showToast('Configurações salvas!');
-            }
-
-            function exportData() {
-                const dataStr = JSON.stringify(siteData, null, 2);
-                const blob = new Blob([dataStr], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `backup_ararasnegras_${new Date().toISOString().split('T')[0]}.json`;
-                a.click();
-                URL.revokeObjectURL(url);
-                showToast('Backup exportado com sucesso!');
-            }
-
-            function importData(file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const imported = JSON.parse(e.target.result);
-                        if (imported.noticias && imported.galeria && imported.servicos && 
-                            imported.depoimentos && imported.institucional && imported.config) {
-                            siteData = imported;
-                            saveData();
-                            renderAll();
-                            showToast('Backup importado com sucesso!');
-                        } else {
-                            showToast('Arquivo de backup inválido!', 'error');
-                        }
-                    } catch(err) {
-                        showToast('Erro ao importar backup!', 'error');
-                    }
-                };
-                reader.readAsText(file);
-            }
-
-            function resetData() {
-                pendingDeleteCallback = () => {
-                    siteData = JSON.parse(JSON.stringify(DEFAULT_SITE_DATA));
-                    localStorage.setItem(STORAGE_KEYS.DATA, JSON.stringify(siteData));
-                    renderAll();
-                    showToast('Todos os dados foram resetados!');
-                    document.getElementById('confirmModal')?.classList.remove('show');
-                };
-                document.getElementById('confirmMessage').textContent = 'ATENÇÃO! Isso apagará TODOS os dados do sistema. Esta ação não pode ser desfeita. Deseja continuar?';
-                document.getElementById('confirmModal')?.classList.add('show');
-            }
-
-            function renderAll() {
-                renderSlides();
-                renderNews();
-                renderGallery();
-                renderServices();
-                renderTestimonials();
-                loadInstitutional();
-                loadSettings();
-                updateStats();
-            }
-
-            function loadUserToSettings() {
-                if (!currentUser) return;
-                document.getElementById('settingsProfileName').value = currentUser.name;
-                document.getElementById('settingsProfileEmail').value = currentUser.email;
-                document.getElementById('settingsNewPassword').value = '';
-                document.getElementById('settingsConfirmPassword').value = '';
-                const avatarPreview = document.getElementById('settingsAvatarPreview');
-                const avatarRemove = document.getElementById('settingsAvatarRemove');
-                if (avatarPreview) {
-                    if (currentUser.avatar) {
-                        updateAvatarPreview(avatarPreview, currentUser.avatar);
-                        settingsAvatarData = currentUser.avatar;
-                        if (avatarRemove) avatarRemove.style.display = 'inline-flex';
-                    } else {
-                        updateAvatarPreview(avatarPreview, null);
-                        settingsAvatarData = null;
-                        if (avatarRemove) avatarRemove.style.display = 'none';
-                    }
-                }
-            }
-
-            function initEventListeners() {
-                document.querySelectorAll('.nav-link').forEach(link => {
-                    link.addEventListener('click', () => {
-                        const panel = link.getAttribute('data-panel');
-                        if (panel) {
-                            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                            link.classList.add('active');
-                            const panelNames = {
-                                home: 'Dashboard',
-                                institucional: 'Institucional',
-                                noticias: 'Notícias',
-                                galeria: 'Galeria',
-                                servicos: 'Serviços',
-                                depoimentos: 'Depoimentos',
-                                configuracoes: 'Configurações'
-                            };
-                            if (panel === 'home') {
-                                window.showCardsView();
-                            } else {
-                                showPanel(panel + 'Panel', panelNames[panel]);
-                            }
-                        }
-                    });
-                });
-
-                document.querySelectorAll('.admin-card').forEach(card => {
-                    card.addEventListener('click', () => {
-                        const panel = card.dataset.panel;
-                        const panelNames = {
-                            home: 'Dashboard',
-                            institucional: 'Institucional',
-                            noticias: 'Notícias',
-                            galeria: 'Galeria',
-                            servicos: 'Serviços',
-                            depoimentos: 'Depoimentos',
-                            configuracoes: 'Configurações'
-                        };
-                        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                        const navLink = document.querySelector(`.nav-link[data-panel="${panel}"]`);
-                        if (navLink) navLink.classList.add('active');
-                        if (panel === 'home') {
-                            window.showCardsView();
-                        } else {
-                            showPanel(panel + 'Panel', panelNames[panel]);
-                        }
-                    });
-                });
-
-                document.getElementById('loginForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const email = document.getElementById('loginEmail').value;
-                    const password = document.getElementById('loginPassword').value;
-                    const errorDiv = document.getElementById('loginError');
-                    if (loginUser(email, password)) {
-                        document.getElementById('loginContainer').style.display = 'none';
-                        document.getElementById('adminContainer').style.display = 'flex';
-                        renderAll();
-                        showToast(`Bem-vindo, ${currentUser.name}!`);
-                    } else {
-                        errorDiv.style.display = 'flex';
-                        setTimeout(() => errorDiv.style.display = 'none', 3000);
-                    }
-                });
-
-                document.getElementById('showRegister').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    document.getElementById('loginForm').style.display = 'none';
-                    document.getElementById('registerForm').style.display = 'block';
-                });
-
-                document.getElementById('backToLogin').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    document.getElementById('registerForm').style.display = 'none';
-                    document.getElementById('loginForm').style.display = 'block';
-                });
-
-                document.getElementById('registerForm').addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    const name = document.getElementById('registerName').value;
-                    const email = document.getElementById('registerEmail').value;
-                    const password = document.getElementById('registerPassword').value;
-                    const confirmPassword = document.getElementById('registerConfirmPassword').value;
-                    const errorDiv = document.getElementById('registerError');
-                    if (password !== confirmPassword) {
-                        errorDiv.textContent = 'As senhas não coincidem!';
-                        errorDiv.style.display = 'flex';
-                        setTimeout(() => errorDiv.style.display = 'none', 3000);
-                        return;
-                    }
-                    const result = registerUser(name, email, password, registerAvatarData);
-                    if (result.success) {
-                        showToast('Cadastro realizado com sucesso! Faça login.');
-                        document.getElementById('backToLogin').click();
-                        document.getElementById('registerForm').reset();
-                        registerAvatarData = null;
-                        updateAvatarPreview(document.getElementById('registerAvatarPreview'), null);
-                        document.getElementById('registerAvatarRemove').style.display = 'none';
-                    } else {
-                        errorDiv.textContent = result.message;
-                        errorDiv.style.display = 'flex';
-                        setTimeout(() => errorDiv.style.display = 'none', 3000);
-                    }
-                });
-
-                const registerAvatarFile = document.getElementById('registerAvatarFile');
-                const registerAvatarPreview = document.getElementById('registerAvatarPreview');
-                const registerAvatarRemove = document.getElementById('registerAvatarRemove');
-                if (registerAvatarFile) {
-                    registerAvatarFile.addEventListener('change', async (e) => {
-                        if (e.target.files && e.target.files[0]) {
-                            const file = e.target.files[0];
-                            if (!validateImageFile(file)) return;
-                            registerAvatarData = await fileToBase64(file);
-                            updateAvatarPreview(registerAvatarPreview, registerAvatarData);
-                            registerAvatarRemove.style.display = 'inline-flex';
-                        }
-                    });
-                }
-                if (registerAvatarRemove) {
-                    registerAvatarRemove.addEventListener('click', () => {
-                        registerAvatarData = null;
-                        updateAvatarPreview(registerAvatarPreview, null);
-                        registerAvatarFile.value = '';
-                        registerAvatarRemove.style.display = 'none';
-                    });
-                }
-
-                const settingsAvatarFile = document.getElementById('settingsAvatarFile');
-                const settingsAvatarPreview = document.getElementById('settingsAvatarPreview');
-                const settingsAvatarRemove = document.getElementById('settingsAvatarRemove');
-                if (settingsAvatarFile) {
-                    settingsAvatarFile.addEventListener('change', async (e) => {
-                        if (e.target.files && e.target.files[0]) {
-                            const file = e.target.files[0];
-                            if (!validateImageFile(file)) return;
-                            settingsAvatarData = await fileToBase64(file);
-                            updateAvatarPreview(settingsAvatarPreview, settingsAvatarData);
-                            settingsAvatarRemove.style.display = 'inline-flex';
-                        }
-                    });
-                }
-                if (settingsAvatarRemove) {
-                    settingsAvatarRemove.addEventListener('click', () => {
-                        settingsAvatarData = null;
-                        updateAvatarPreview(settingsAvatarPreview, null);
-                        settingsAvatarFile.value = '';
-                        settingsAvatarRemove.style.display = 'none';
-                    });
-                }
-
-                const saveProfileBtn = document.getElementById('saveProfileSettingsBtn');
-                if (saveProfileBtn) {
-                    saveProfileBtn.addEventListener('click', () => {
-                        const newName = document.getElementById('settingsProfileName').value;
-                        const newEmail = document.getElementById('settingsProfileEmail').value;
-                        const newPassword = document.getElementById('settingsNewPassword').value;
-                        const confirmPassword = document.getElementById('settingsConfirmPassword').value;
-                        if (newPassword && newPassword !== confirmPassword) {
-                            showToast('As senhas não coincidem!', 'error');
-                            return;
-                        }
-                        if (newPassword && newPassword.length < 6) {
-                            showToast('A nova senha deve ter pelo menos 6 caracteres!', 'error');
-                            return;
-                        }
-                        if (!validateEmail(newEmail)) {
-                            showToast('E-mail inválido!', 'error');
-                            return;
-                        }
-                        const updates = { name: newName, email: newEmail };
-                        if (settingsAvatarData !== null && settingsAvatarData !== currentUser.avatar) {
-                            updates.avatar = settingsAvatarData;
-                        }
-                        if (newPassword) updates.password = newPassword;
-                        if (updateUserProfile(currentUser.id, updates)) {
-                            showToast('Perfil atualizado com sucesso!');
-                            loadUserToSettings();
-                        } else {
-                            showToast('Erro ao atualizar perfil!', 'error');
-                        }
-                    });
-                }
-
-                const forgotModal = document.getElementById('forgotPasswordModal');
-                const resetPasswordModal = document.getElementById('resetPasswordModal');
-                let resetEmail = null;
-                document.getElementById('forgotPasswordLink').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    forgotModal.classList.add('show');
-                });
-                document.getElementById('cancelForgot').addEventListener('click', () => {
-                    forgotModal.classList.remove('show');
-                });
-                document.getElementById('sendResetLink').addEventListener('click', () => {
-                    const email = document.getElementById('forgotEmail').value;
-                    const users = loadUsers();
-                    const user = users.find(u => u.email === email);
-                    if (user) {
-                        resetEmail = email;
-                        forgotModal.classList.remove('show');
-                        document.getElementById('resetEmailDisplay').textContent = email;
-                        resetPasswordModal.classList.add('show');
-                    } else {
-                        const msgDiv = document.getElementById('forgotMessage');
-                        msgDiv.textContent = 'E-mail não cadastrado!';
-                        msgDiv.style.display = 'flex';
-                        setTimeout(() => msgDiv.style.display = 'none', 3000);
-                    }
-                });
-                document.getElementById('cancelResetBtn').addEventListener('click', () => {
-                    resetPasswordModal.classList.remove('show');
-                    resetEmail = null;
-                });
-                document.getElementById('confirmResetBtn').addEventListener('click', () => {
-                    const newPassword = document.getElementById('resetNewPassword').value;
-                    const confirmPassword = document.getElementById('resetConfirmPassword').value;
-                    const msgDiv = document.getElementById('resetMessage');
-                    if (newPassword.length < 6) {
-                        msgDiv.textContent = 'A senha deve ter pelo menos 6 caracteres!';
-                        msgDiv.style.display = 'flex';
-                        return;
-                    }
-                    if (newPassword !== confirmPassword) {
-                        msgDiv.textContent = 'As senhas não coincidem!';
-                        msgDiv.style.display = 'flex';
-                        return;
-                    }
-                    if (resetUserPassword(resetEmail, newPassword)) {
-                        showToast('Senha redefinida com sucesso! Faça login.');
-                        resetPasswordModal.classList.remove('show');
-                        resetEmail = null;
-                        document.getElementById('resetNewPassword').value = '';
-                        document.getElementById('resetConfirmPassword').value = '';
-                    } else {
-                        showToast('Erro ao redefinir senha!', 'error');
-                    }
-                });
-
-                document.querySelectorAll('.toggle-password').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const targetId = btn.dataset.target;
-                        const input = document.getElementById(targetId);
-                        if (input) {
-                            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
-                            input.setAttribute('type', type);
-                            btn.innerHTML = type === 'password' ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
-                        }
-                    });
-                });
-
-                document.getElementById('logoutSidebarBtn').addEventListener('click', logout);
-
-                document.getElementById('addNewsForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const title = document.getElementById('newsTitle').value;
-                    const description = document.getElementById('newsDescription').value;
-                    if (!title || !description) {
-                        showToast('Preencha título e descrição!', 'error');
-                        return;
-                    }
-                    window.addNews({
-                        title: title,
-                        description: description,
-                        category: document.getElementById('newsCategory').value,
-                        image: document.getElementById('newsImagePreview')?.src || '',
-                        date: new Date().toLocaleDateString('pt-BR'),
-                        author: document.getElementById('newsAuthor').value || 'Equipe Araras Negras'
-                    });
-                    e.target.reset();
-                    const preview = document.getElementById('newsImagePreview');
-                    if (preview) preview.src = '';
-                });
-                
-                document.getElementById('addGalleryForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const title = document.getElementById('galleryTitle').value;
-                    const imageSrc = document.getElementById('galleryImagePreview')?.src;
-                    if (!title || !imageSrc) {
-                        showToast('Preencha título e selecione uma imagem!', 'error');
-                        return;
-                    }
-                    window.addGalleryItem({
-                        src: imageSrc,
-                        category: document.getElementById('galleryCategory').value,
-                        title: title,
-                        description: document.getElementById('galleryDescription').value
-                    });
-                    e.target.reset();
-                    const preview = document.getElementById('galleryImagePreview');
-                    if (preview) preview.src = '';
-                });
-                
-                document.getElementById('addTestimonialForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const name = document.getElementById('testimonialName').value;
-                    const role = document.getElementById('testimonialRole').value;
-                    const text = document.getElementById('testimonialText').value;
-                    if (!name || !role || !text) {
-                        showToast('Preencha todos os campos!', 'error');
-                        return;
-                    }
-                    window.addTestimonial({
-                        name: name,
-                        role: role,
-                        text: text,
-                        image: document.getElementById('testimonialImagePreview')?.src || ''
-                    });
-                    e.target.reset();
-                    const preview = document.getElementById('testimonialImagePreview');
-                    if (preview) preview.src = '';
-                });
-                
-                document.getElementById('settingsForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    saveSettings();
-                });
-                
-                document.getElementById('institutionalForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    saveInstitutional();
-                });
-                
-                document.getElementById('addSlideBtn').addEventListener('click', () => {
-                    document.getElementById('addSlideModal')?.classList.add('show');
-                });
-                
-                document.getElementById('addServiceBtn').addEventListener('click', window.openAddServiceModal);
-                document.getElementById('editServiceForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    saveServiceEdit();
-                });
-                document.getElementById('addServiceFormModal').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    addServiceFromModal();
-                });
-                document.getElementById('closeServiceModal').addEventListener('click', () => {
-                    document.getElementById('serviceModal')?.classList.remove('show');
-                });
-                document.getElementById('closeAddServiceModal').addEventListener('click', () => {
-                    document.getElementById('addServiceModal')?.classList.remove('show');
-                });
-                document.getElementById('addSlideFormModal').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const image = document.getElementById('addSlideImagePreview')?.src || '';
-                    if (!image) {
-                        showToast('Selecione uma imagem para o slide!', 'error');
-                        return;
-                    }
-                    window.addSlide({
-                        tagline: document.getElementById('addSlideTagline').value,
-                        title: document.getElementById('addSlideTitle').value,
-                        subtitle: document.getElementById('addSlideSubtitle').value,
-                        image: image,
-                        buttonText: 'Conheça-nos',
-                        buttonLink: '#institucional'
-                    });
-                    document.getElementById('addSlideModal')?.classList.remove('show');
-                    document.getElementById('addSlideFormModal').reset();
-                    const preview = document.getElementById('addSlideImagePreview');
-                    if (preview) preview.src = '';
-                });
-                document.getElementById('closeAddSlideModal').addEventListener('click', () => {
-                    document.getElementById('addSlideModal')?.classList.remove('show');
-                });
-                document.getElementById('closeEditSlideModal').addEventListener('click', () => {
-                    document.getElementById('editSlideModal')?.classList.remove('show');
-                });
-                document.getElementById('editSlideForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    saveSlideEdit();
-                });
-                document.getElementById('closeEditTestimonialModal').addEventListener('click', () => {
-                    document.getElementById('editTestimonialModal')?.classList.remove('show');
-                });
-                document.getElementById('editTestimonialFormModal').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    saveTestimonialEdit();
-                });
-                document.getElementById('exportDataBtn').addEventListener('click', exportData);
-                document.getElementById('importDataBtn').addEventListener('click', () => {
-                    document.getElementById('importFile')?.click();
-                });
-                document.getElementById('importFile').addEventListener('change', (e) => {
-                    if (e.target.files && e.target.files[0]) {
-                        importData(e.target.files[0]);
-                    }
-                });
-                document.getElementById('resetDataBtn').addEventListener('click', resetData);
-
-                document.getElementById('confirmYes').addEventListener('click', () => {
-                    if (pendingDeleteCallback) pendingDeleteCallback();
-                    pendingDeleteCallback = null;
-                });
-                document.getElementById('confirmNo').addEventListener('click', () => {
-                    document.getElementById('confirmModal')?.classList.remove('show');
-                    pendingDeleteCallback = null;
-                });
-
-                window.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('modal-overlay')) {
-                        e.target.classList.remove('show');
-                    }
-                    if (e.target.classList.contains('confirm-modal')) {
-                        e.target.classList.remove('show');
-                    }
-                });
-
-                function setupImageUpload(inputId, previewId, callback) {
-                    const input = document.getElementById(inputId);
-                    if (input) {
-                        input.addEventListener('change', async (e) => {
-                            if (e.target.files && e.target.files[0]) {
-                                const file = e.target.files[0];
-                                if (!validateImageFile(file)) {
-                                    e.target.value = '';
-                                    return;
-                                }
-                                const imgData = await fileToBase64(file);
-                                const preview = document.getElementById(previewId);
-                                if (preview) {
-                                    preview.src = imgData;
-                                    preview.classList.add('active');
-                                    if (callback) callback(imgData);
-                                }
-                            }
-                        });
-                    }
-                }
-                
-                setupImageUpload('newsImageFile', 'newsImagePreview');
-                setupImageUpload('galleryImageFile', 'galleryImagePreview');
-                setupImageUpload('testimonialImageFile', 'testimonialImagePreview');
-                setupImageUpload('instVideoThumb', 'instVideoPreview', (data) => {
-                    siteData.institucional.videoThumb = data;
-                    saveData();
-                });
-                setupImageUpload('addSlideImageFile', 'addSlideImagePreview');
-                setupImageUpload('editSlideImageFile', 'editSlideImagePreview');
-
-                function initSidebar() {
-                    const sidebar = document.getElementById('sidebar');
-                    const collapseBtn = document.getElementById('collapseBtn');
-                    const savedState = localStorage.getItem(STORAGE_KEYS.SIDEBAR);
-                    if (savedState === 'collapsed') {
-                        sidebar.classList.add('collapsed');
-                        if (collapseBtn) collapseBtn.innerHTML = '<i class="fas fa-chevron-right"></i><span>Expandir Menu</span>';
-                    }
-                    if (collapseBtn) {
-                        collapseBtn.addEventListener('click', () => {
-                            sidebar.classList.toggle('collapsed');
-                            const isCollapsed = sidebar.classList.contains('collapsed');
-                            localStorage.setItem(STORAGE_KEYS.SIDEBAR, isCollapsed ? 'collapsed' : 'expanded');
-                            collapseBtn.innerHTML = isCollapsed ? 
-                                '<i class="fas fa-chevron-right"></i><span>Expandir Menu</span>' : 
-                                '<i class="fas fa-chevron-left"></i><span>Recolher Menu</span>';
-                        });
-                    }
-                }
-                initSidebar();
-
-                const userInfoHeader = document.getElementById('userInfoHeader');
-                if (userInfoHeader) {
-                    userInfoHeader.addEventListener('click', () => {
-                        if (currentUser) loadUserToSettings();
-                        showPanel('configuracoesPanel', 'Configurações');
-                        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                        const configLink = document.querySelector('.nav-link[data-panel="configuracoes"]');
-                        if (configLink) configLink.classList.add('active');
-                    });
-                }
-            }
-
-            function init() {
-                loadData();
-                if (!checkSession()) {
-                    document.getElementById('loginContainer').style.display = 'flex';
-                    document.getElementById('adminContainer').style.display = 'none';
-                }
-                document.getElementById('cardsView').style.display = 'block';
-                initEventListeners();
-            }
-
-            window.showCardsView = showCardsView;
-            window.addSlide = addSlide;
-            window.deleteSlide = deleteSlide;
-            window.openEditSlideModal = openEditSlideModal;
-            window.addNews = addNews;
-            window.deleteNews = deleteNews;
-            window.editNews = editNews;
-            window.addGalleryItem = addGalleryItem;
-            window.deleteGalleryItem = deleteGalleryItem;
-            window.openEditServiceModal = openEditServiceModal;
-            window.openAddServiceModal = openAddServiceModal;
-            window.deleteService = deleteService;
-            window.openEditTestimonialModal = openEditTestimonialModal;
-            window.addTestimonial = addTestimonial;
-            window.deleteTestimonial = deleteTestimonial;
-
-            init();
-        })();
-
-        // ===== MOBILE MENU TOGGLE =====
-        (function() {
-            const menuToggle = document.getElementById('menuToggle');
-            const sidebar = document.getElementById('sidebar');
-            const sidebarOverlay = document.getElementById('sidebarOverlay');
-            
-            function openMobileMenu() {
-                sidebar.classList.add('active');
-                sidebarOverlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-            
-            function closeMobileMenu() {
-                sidebar.classList.remove('active');
-                sidebarOverlay.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-            
-            if (menuToggle) {
-                menuToggle.addEventListener('click', openMobileMenu);
-            }
-            
-            if (sidebarOverlay) {
-                sidebarOverlay.addEventListener('click', closeMobileMenu);
-            }
-            
-            const navLinks = document.querySelectorAll('.nav-link');
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    if (window.innerWidth <= 768) {
-                        closeMobileMenu();
-                    }
-                });
-            });
-            
-            window.addEventListener('resize', () => {
-                if (window.innerWidth > 768) {
-                    closeMobileMenu();
-                }
-            });
-        })();
-
-        // CORREÇÃO: Faz o card Dashboard abrir o painel de slides
-document.querySelectorAll('.admin-card').forEach(card => {
-    card.removeEventListener('click', null); // Remove listeners antigos
-    card.addEventListener('click', () => {
-        const panel = card.dataset.panel;
-        const panelNames = {
-            home: 'Gerenciar Slides',
-            institucional: 'Institucional',
-            noticias: 'Notícias',
-            galeria: 'Galeria',
-            servicos: 'Serviços',
-            depoimentos: 'Depoimentos',
-            configuracoes: 'Configurações'
-        };
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        const navLink = document.querySelector(`.nav-link[data-panel="${panel}"]`);
-        if (navLink) navLink.classList.add('active');
-        
-        // Todos os cards, inclusive o home, agora abrem seus respectivos painéis
-        if (panel === 'home') {
-            const cardsView = document.getElementById('cardsView');
-            if (cardsView) cardsView.style.display = 'none';
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            const homePanel = document.getElementById('homePanel');
-            if (homePanel) homePanel.classList.add('active');
-            document.getElementById('pageTitle').textContent = 'Gerenciar Slides';
-        } else {
-            showPanel(panel + 'Panel', panelNames[panel]);
+            return false;
+        } catch (error) {
+            console.error('Erro no login:', error);
+            return false;
         }
-    });
-});
+    }
 
-    </script>
+    function logout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        currentUser = null;
+        document.getElementById('adminContainer').style.display = 'none';
+        document.getElementById('loginContainer').style.display = 'flex';
+        showToast('Logout realizado com sucesso!');
+    }
+
+    function updateUserInterface() {
+        if (!currentUser) return;
+        const avatarHeader = document.getElementById('userAvatarHeader');
+        const nameHeader = document.getElementById('userNameHeader');
+        if (avatarHeader) {
+            if (currentUser.avatar) {
+                avatarHeader.innerHTML = `<img src="${currentUser.avatar}" alt="Avatar">`;
+            } else {
+                avatarHeader.innerHTML = '<i class="fas fa-user-circle"></i>';
+            }
+        }
+        if (nameHeader) {
+            nameHeader.textContent = currentUser.name.split(' ')[0];
+        }
+    }
+
+    // ===== CARREGAR DADOS =====
+    async function loadAllData() {
+        try {
+            const [servicos, depoimentos, noticias, galeria, slides, config] = await Promise.all([
+                fetch(`${API_URL}/servicos`).then(r => r.json()),
+                fetch(`${API_URL}/depoimentos`).then(r => r.json()),
+                fetch(`${API_URL}/noticias`).then(r => r.json()),
+                fetch(`${API_URL}/galeria`).then(r => r.json()),
+                fetch(`${API_URL}/slides`).then(r => r.json()),
+                fetch(`${API_URL}/config`).then(r => r.json())
+            ]);
+            
+            siteData.servicos = servicos;
+            siteData.depoimentos = depoimentos;
+            siteData.noticias = noticias;
+            siteData.galeria = galeria;
+            siteData.home.slides = slides;
+            siteData.config = config;
+            
+            renderAll();
+            updateStats();
+        } catch (error) {
+            console.error('Erro ao carregar dados:', error);
+            showToast('Erro ao carregar dados!', 'error');
+        }
+    }
+
+    function updateStats() {
+        const elements = {
+            statSlides: siteData.home.slides.length,
+            statNoticias: siteData.noticias.length,
+            statGaleria: siteData.galeria.length,
+            statServicos: siteData.servicos.length,
+            statDepoimentos: siteData.depoimentos.length
+        };
+        for (const [id, value] of Object.entries(elements)) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = value;
+        }
+    }
+
+    // ===== RENDERIZAÇÃO =====
+    function renderAll() {
+        renderSlides();
+        renderServices();
+        renderNews();
+        renderGallery();
+        renderTestimonials();
+        loadInstitutional();
+        loadSettings();
+    }
+
+    function renderSlides() {
+        const container = document.getElementById('sliderList');
+        if (!container) return;
+        if (!siteData.home.slides.length) {
+            container.innerHTML = '<p style="text-align: center; padding: 40px;">Nenhum slide cadastrado.</p>';
+            return;
+        }
+        container.innerHTML = siteData.home.slides.map((slide, index) => `
+            <div class="slider-item">
+                <img src="${escapeHtml(slide.image)}" alt="Slide ${index+1}">
+                <div class="info">
+                    <strong>${escapeHtml(slide.tagline || 'Sem título')}</strong>
+                    <p>${escapeHtml(slide.title || '')}</p>
+                    <small>${escapeHtml(slide.subtitle || '')}</small>
+                </div>
+                <div class="actions">
+                    <button class="btn-edit" onclick="window.openEditSlideModal(${slide.id})">Editar</button>
+                    <button class="btn-delete" onclick="window.deleteSlide(${slide.id})">Excluir</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderServices() {
+        const container = document.getElementById('servicesList');
+        if (!container) return;
+        if (!siteData.servicos.length) {
+            container.innerHTML = '<p style="text-align: center; padding: 40px;">Nenhum serviço cadastrado.</p>';
+            return;
+        }
+        container.innerHTML = siteData.servicos.map((s, i) => `
+            <div class="service-item">
+                <h4><i class="fas ${s.icone}"></i> ${escapeHtml(s.titulo)}</h4>
+                <p>${escapeHtml(s.descricao)}</p>
+                <div class="service-actions">
+                    <button class="btn-edit" onclick="window.openEditServiceModal(${s.id})">Editar</button>
+                    <button class="btn-delete" onclick="window.deleteService(${s.id})">Excluir</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderNews() {
+        const tbody = document.getElementById('newsList');
+        if (!tbody) return;
+        if (!siteData.noticias.length) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 40px;">Nenhuma notícia cadastrada</td></tr>';
+            return;
+        }
+        tbody.innerHTML = siteData.noticias.map((n, i) => `
+            <tr>
+                <td><strong>${escapeHtml(n.titulo.substring(0, 50))}</strong></td>
+                <td><span style="background: var(--primary-light); color: var(--primary-dark); padding: 4px 8px; border-radius: 20px;">${escapeHtml(n.categoria)}</span></td>
+                <td>${escapeHtml(n.data_publicacao)}</td>
+                <td>
+                    <button class="btn-edit" onclick="window.editNews(${n.id})">Editar</button>
+                    <button class="btn-delete" onclick="window.deleteNews(${n.id})">Excluir</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function renderGallery() {
+        const container = document.getElementById('galleryList');
+        if (!container) return;
+        if (!siteData.galeria.length) {
+            container.innerHTML = '<p style="text-align: center; padding: 40px;">Nenhuma foto na galeria</p>';
+            return;
+        }
+        container.innerHTML = siteData.galeria.map((item, i) => `
+            <div class="gallery-item-admin">
+                <img src="${escapeHtml(item.src)}" alt="${escapeHtml(item.titulo)}">
+                <div class="info">
+                    <p><strong>${escapeHtml(item.titulo)}</strong></p>
+                    <p style="font-size: 0.7rem;">${escapeHtml(item.categoria)}</p>
+                    <button class="btn-delete" onclick="window.deleteGalleryItem(${item.id})">Excluir</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderTestimonials() {
+        const tbody = document.getElementById('testimonialsList');
+        if (!tbody) return;
+        if (!siteData.depoimentos.length) {
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 40px;">Nenhum depoimento cadastrado</td></tr>';
+            return;
+        }
+        tbody.innerHTML = siteData.depoimentos.map((t, i) => `
+            <tr>
+                <td><strong>${escapeHtml(t.nome)}</strong><br><small style="color: var(--gray-500);">${escapeHtml(t.funcao)}</small></td>
+                <td>${escapeHtml(t.texto.substring(0, 80))}</td>
+                <td>
+                    <button class="btn-edit" onclick="window.openEditTestimonialModal(${t.id})">Editar</button>
+                    <button class="btn-delete" onclick="window.deleteTestimonial(${t.id})">Excluir</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function loadInstitutional() {
+        // Implementar conforme necessário
+    }
+
+    function loadSettings() {
+        if (siteData.config) {
+            document.getElementById('emergencyPhone').value = siteData.config.emergencyPhone || '';
+            document.getElementById('contactEmail').value = siteData.config.contactEmail || '';
+            document.getElementById('contactAddress').value = siteData.config.endereco || '';
+            document.getElementById('whatsappNumber').value = siteData.config.whatsapp || '';
+        }
+    }
+
+    // ===== CRUD SERVIÇOS =====
+    window.addService = async function(servico) {
+        try {
+            const newService = await apiRequest('/servicos', 'POST', servico);
+            siteData.servicos.push(newService);
+            renderServices();
+            updateStats();
+            showToast('Serviço adicionado!');
+        } catch (error) {
+            showToast('Erro ao adicionar serviço!', 'error');
+        }
+    };
+
+    window.deleteService = async function(id) {
+        if (confirm('Tem certeza que deseja excluir este serviço?')) {
+            try {
+                await apiRequest(`/servicos/${id}`, 'DELETE');
+                siteData.servicos = siteData.servicos.filter(s => s.id !== id);
+                renderServices();
+                updateStats();
+                showToast('Serviço excluído!');
+            } catch (error) {
+                showToast('Erro ao excluir serviço!', 'error');
+            }
+        }
+    };
+
+    window.openEditServiceModal = function(id) {
+        const service = siteData.servicos.find(s => s.id === id);
+        if (service) {
+            document.getElementById('editServiceIcon').value = service.icone;
+            document.getElementById('editServiceTitle').value = service.titulo;
+            document.getElementById('editServiceDescription').value = service.descricao;
+            window.editingServiceId = id;
+            document.getElementById('serviceModal').classList.add('show');
+        }
+    };
+
+    window.saveServiceEdit = async function() {
+        const updatedService = {
+            icon: document.getElementById('editServiceIcon').value,
+            title: document.getElementById('editServiceTitle').value,
+            description: document.getElementById('editServiceDescription').value
+        };
+        try {
+            await apiRequest(`/servicos/${window.editingServiceId}`, 'PUT', updatedService);
+            await loadAllData();
+            showToast('Serviço atualizado!');
+            document.getElementById('serviceModal').classList.remove('show');
+        } catch (error) {
+            showToast('Erro ao atualizar serviço!', 'error');
+        }
+    };
+
+    // ===== NAVEGAÇÃO =====
+    window.showCardsView = function() {
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('cardsView').style.display = 'block';
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        const homeLink = document.querySelector('.nav-link[data-panel="home"]');
+        if (homeLink) homeLink.classList.add('active');
+        document.getElementById('pageTitle').textContent = 'Dashboard';
+    };
+
+    function showPanel(panelId, panelName) {
+        document.getElementById('cardsView').style.display = 'none';
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        const panel = document.getElementById(panelId);
+        if (panel) panel.classList.add('active');
+        document.getElementById('pageTitle').textContent = panelName;
+    }
+
+    // ===== INICIALIZAÇÃO =====
+    function checkSession() {
+        const savedUser = localStorage.getItem('user');
+        const token = localStorage.getItem('token');
+        if (savedUser && token) {
+            currentUser = JSON.parse(savedUser);
+            authToken = token;
+            updateUserInterface();
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('adminContainer').style.display = 'flex';
+            loadAllData();
+            return true;
+        }
+        return false;
+    }
+
+    // ===== EVENT LISTENERS =====
+    function initEventListeners() {
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                const panel = link.getAttribute('data-panel');
+                if (panel) {
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    const panelNames = {
+                        home: 'Dashboard',
+                        institucional: 'Institucional',
+                        noticias: 'Notícias',
+                        galeria: 'Galeria',
+                        servicos: 'Serviços',
+                        depoimentos: 'Depoimentos',
+                        configuracoes: 'Configurações'
+                    };
+                    if (panel === 'home') {
+                        window.showCardsView();
+                    } else {
+                        showPanel(panel + 'Panel', panelNames[panel]);
+                    }
+                }
+            });
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            if (await loginUser(email, password)) {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('adminContainer').style.display = 'flex';
+                showToast(`Bem-vindo, ${currentUser.name}!`);
+            } else {
+                errorDiv.style.display = 'flex';
+                setTimeout(() => errorDiv.style.display = 'none', 3000);
+            }
+        });
+
+        document.getElementById('logoutSidebarBtn')?.addEventListener('click', logout);
+    }
+
+    // Inicializar
+    document.getElementById('cardsView').style.display = 'block';
+    if (!checkSession()) {
+        document.getElementById('loginContainer').style.display = 'flex';
+        document.getElementById('adminContainer').style.display = 'none';
+    }
+    initEventListeners();
+
+    // Exportar funções globais
+    window.showCardsView = showCardsView;
+    window.deleteSlide = (id) => { console.log('Delete slide:', id); };
+    window.openEditSlideModal = (id) => { console.log('Edit slide:', id); };
+    window.editNews = (id) => { console.log('Edit news:', id); };
+    window.deleteNews = (id) => { console.log('Delete news:', id); };
+    window.deleteGalleryItem = (id) => { console.log('Delete gallery:', id); };
+    window.openEditTestimonialModal = (id) => { console.log('Edit testimonial:', id); };
+    window.deleteTestimonial = (id) => { console.log('Delete testimonial:', id); };
+    window.openAddServiceModal = () => {
+        document.getElementById('addServiceIcon').value = '';
+        document.getElementById('addServiceTitle').value = '';
+        document.getElementById('addServiceDescription').value = '';
+        document.getElementById('addServiceModal').classList.add('show');
+    };
+    window.addServiceFromModal = () => {
+        const newService = {
+            icon: document.getElementById('addServiceIcon').value,
+            title: document.getElementById('addServiceTitle').value,
+            description: document.getElementById('addServiceDescription').value
+        };
+        if (newService.icon && newService.title && newService.description) {
+            window.addService(newService);
+            document.getElementById('addServiceModal').classList.remove('show');
+        } else {
+            showToast('Preencha todos os campos!', 'error');
+        }
+    };
+    
+    document.getElementById('addServiceBtn')?.addEventListener('click', window.openAddServiceModal);
+    document.getElementById('addServiceFormModal')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        window.addServiceFromModal();
+    });
+    document.getElementById('editServiceForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        window.saveServiceEdit();
+    });
+    document.getElementById('closeServiceModal')?.addEventListener('click', () => {
+        document.getElementById('serviceModal')?.classList.remove('show');
+    });
+    document.getElementById('closeAddServiceModal')?.addEventListener('click', () => {
+        document.getElementById('addServiceModal')?.classList.remove('show');
+    });
+</script>
 </body>
 </html>
