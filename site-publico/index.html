@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Araras Negras | Bombeiros Civis de Araruna</title>
     
     <meta name="description" content="Araras Negras - Equipe de Bombeiros Civis de Araruna. Protegendo vidas e patrimônios com excelência e dedicação 24 horas.">
@@ -15,22 +15,21 @@
     <meta property="og:title" content="Araras Negras - Bombeiros Civis de Araruna">
     <meta property="og:description" content="Protegendo vidas e patrimônios com coragem e dedicação">
     <meta property="og:image" content="https://images.unsplash.com/photo-1582139329536-e7284fece509?w=1200">
+
+    
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
-    <!-- Favicon inline -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+    <link rel="shortcut icon" href="src/img/LogoArarasNegras.png" type="image/x-icon">
     
     <!-- AOS Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
-    <style>        /* ============================================
-           RESET & BASE
-        ============================================ */
+    <style>
+        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
@@ -48,19 +47,9 @@
             color: #1e1e2f;
             background-color: #ffffff;
             overflow-x: hidden;
-            width: 100%;
-            position: relative;
         }
 
-        body.menu-open {
-            overflow: hidden;
-            position: fixed;
-            width: 100%;
-        }
-
-        /* ============================================
-           VARIÁVEIS (Design System)
-        ============================================ */
+        /* ===== VARIÁVEIS ===== */
         :root {
             --primary: #dc2626;
             --primary-dark: #b91c1c;
@@ -94,9 +83,7 @@
             --transition-slow: 0.5s ease;
         }
 
-        /* ============================================
-           PRELOADER
-        ============================================ */
+        /* ===== PRELOADER (CORRIGIDO) ===== */
         .preloader {
             position: fixed;
             top: 0;
@@ -146,9 +133,7 @@
             to { transform: rotate(360deg); }
         }
 
-        /* ============================================
-           TYPOGRAPHY
-        ============================================ */
+        /* ===== TYPOGRAPHY ===== */
         h1, h2, h3, h4, h5, h6 {
             font-weight: 800;
             line-height: 1.2;
@@ -198,26 +183,24 @@
             font-weight: 800;
             color: var(--gray-900);
             position: relative;
-            display: block;
-            text-align: center;
+            display: block;           /* ← Muda de inline-block para block */
+            text-align: center;      /* ← Centraliza o texto */
         }
 
         .section-title::after {
             content: '';
             position: absolute;
             bottom: -12px;
-            left: 0;
-            right: 0;
+            left: 0;                 /* ← Alinha à esquerda do bloco */
+            right: 0;               /* ← Estica até a direita */
             width: 60px;
             height: 3px;
-            margin: 0 auto;
+            margin: 0 auto;         /* ← Centraliza horizontalmente */
             background: linear-gradient(90deg, var(--primary), var(--primary-dark));
             border-radius: 100px;
         }
 
-        /* ============================================
-           BUTTONS
-        ============================================ */
+        /* ===== BUTTONS ===== */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -291,9 +274,7 @@
             box-shadow: var(--shadow-hover);
         }
 
-        /* ============================================
-           HEADER & NAVEGAÇÃO
-        ============================================ */
+        /* ===== HEADER ===== */
         .header {
             position: fixed;
             top: 0;
@@ -312,6 +293,7 @@
             backdrop-filter: blur(12px);
         }
 
+        /* Header escuro quando em seções escuras */
         .header.dark-bg {
             background: rgba(15, 23, 42, 0.95);
         }
@@ -336,8 +318,6 @@
             align-items: center;
             gap: 12px;
             text-decoration: none;
-            z-index: 1002;
-            position: relative;
         }
 
         .logo i {
@@ -368,65 +348,10 @@
             font-weight: 500;
         }
 
-        /* Botão Hamburguer */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            gap: 6px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 8px;
-            z-index: 1002;
-            position: relative;
-        }
-
-        .hamburger span {
-            width: 26px;
-            height: 2px;
-            background: var(--gray-800);
-            transition: all var(--transition-base);
-            border-radius: 100px;
-        }
-
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(6px, 6px);
-        }
-
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-            transform: translateX(-10px);
-        }
-
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(6px, -6px);
-        }
-
-        /* Menu Mobile - Overlay */
-        .menu-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(4px);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all var(--transition-base);
-        }
-
-        .menu-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Menu de Navegação */
+        /* Navigation */
         .nav-menu {
             z-index: 1001;
         }
-        
         .nav-menu ul {
             display: flex;
             list-style: none;
@@ -464,97 +389,43 @@
             color: var(--primary);
         }
 
-        /* ============================================
-           RESPONSIVIDADE - MENU MOBILE
-        ============================================ */
-    
-        @media (max-width: 768px) {
-            .hamburger {
-                display: flex;
-            }
-
-            .nav-menu {
-                position: fixed;
-                top: 0;
-                left: -100%;
-                width: 280px;
-                height: 100dvh;
-                background: linear-gradient(135deg, #0f172a, #1e1b4b);
-                padding: 100px 24px 20px;
-                transition: left 0.3s ease;
-                z-index: 1001;
-                overflow-y: auto;   
-                box-shadow: 5px 0 30px rgba(0,0,0,0.3);
-                display: flex;
-                flex-direction: column;
-            }
-
-            .nav-menu.active {
-                left: 0;
-            }
-
-            .nav-menu ul {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 24px;
-                margin: 0;
-                padding: 0;
-                width: 100%;
-            }
-
-            .nav-menu a {
-                color: white;
-                font-size: 1.125rem;
-                padding: 8px 0;
-                display: inline-block;
-            }
-
-            .nav-menu a::after {
-                bottom: 0;
-                background: var(--primary);
-            }
-
-            .nav-menu a:hover,
-            .nav-menu a.active {
-                color: var(--primary-light);
-            }
-
-            /* Remove espaço extra do último item */
-            .nav-menu ul li:last-child {
-                margin-bottom: 0;
-            }
-
-            /* Garante que o conteúdo ocupe todo espaço */
-            .nav-menu ul:last-child {
-                margin-bottom: 0;
-                padding-bottom: 0;
-            }
-
-            .container {
-                padding: 0 20px;
-            }
-            
-            .section {
-                padding: 60px 0;
-            }
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
         }
 
-        /* ============================================
-           HERO SLIDER
-        ============================================ */
+        .hamburger span {
+            width: 26px;
+            height: 2px;
+            background: var(--gray-800);
+            transition: all var(--transition-base);
+            border-radius: 100px;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        /* ===== HERO SLIDER ===== */
         .hero {
             margin-top: 76px;
             position: relative;
-            height: 100vh;
-            min-height: 500px;
-            max-height: none;
+            height: calc(100vh - 76px);
+            min-height: 600px;
             overflow: hidden;
-        }
-
-        @supports (-webkit-touch-callout: none) {
-            .hero {
-                height: -webkit-fill-available;
-            }
         }
 
         .hero-slider {
@@ -636,7 +507,7 @@
         }
 
         .hero-title {
-            font-size: clamp(2rem, 8vw, 5rem);
+            font-size: clamp(2.5rem, 8vw, 5rem);
             font-weight: 800;
             line-height: 1.1;
             margin-bottom: 20px;
@@ -645,7 +516,7 @@
         }
 
         .hero-subtitle {
-            font-size: clamp(0.875rem, 3vw, 1.25rem);
+            font-size: clamp(1rem, 3vw, 1.25rem);
             margin-bottom: 32px;
             max-width: 600px;
             opacity: 0.95;
@@ -726,26 +597,7 @@
             border-radius: 100px;
         }
 
-        @media (max-width: 768px) {
-            .slider-arrow {
-                display: none;
-            }
-            .hero-title {
-                font-size: 2rem;
-            }
-            .hero-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-
-        /* ============================================
-           STATS SECTION
-        ============================================ */
+        /* ===== STATS SECTION ===== */
         .stats-section {
             background: linear-gradient(135deg, var(--gray-900) 0%, #1e1b4b 100%);
             padding: 60px 0;
@@ -812,48 +664,7 @@
             color: rgba(255,255,255,0.7);
         }
 
-        /* Stats - Responsivo */
-        @media (max-width: 992px) and (min-width: 769px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 25px !important;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: 1fr !important;
-                gap: 20px !important;
-            }
-            .stat-item {
-                padding: 25px 20px !important;
-            }
-            .stat-number {
-                font-size: 2rem !important;
-            }
-            .stat-label {
-                font-size: 0.8rem !important;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .stats-grid {
-                gap: 15px !important;
-            }
-            .stat-item {
-                padding: 20px 15px !important;
-            }
-            .stat-item i {
-                font-size: 2rem !important;
-            }
-            .stat-number {
-                font-size: 1.75rem !important;
-            }
-        }
-
-        /* ============================================
-           INSTITUCIONAL (ABOUT)
-        ============================================ */
+        /* ===== ABOUT SECTION ===== */
         .about-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -974,26 +785,7 @@
             transform: translate(-50%, -50%) scale(1.1);
         }
 
-        /* About - Responsivo */
-        @media (max-width: 768px) {
-            .about-grid {
-                grid-template-columns: 1fr !important;
-                gap: 40px !important;
-            }
-            .about-content {
-                order: 1 !important;
-            }
-            .about-video {
-                order: 2 !important;
-            }
-            .about-features {
-                margin-top: 20px !important;
-            }
-        }
-
-        /* ============================================
-           CARDS (Missão, Visão, Valores)
-        ============================================ */
+        /* ===== CARDS (Missão, Visão, Valores) - CORRIGIDO ===== */
         .cards-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -1062,25 +854,7 @@
             transition: color var(--transition-base);
         }
 
-        /* Cards - Responsivo */
-        @media (max-width: 992px) {
-            .cards-container {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 25px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .cards-container {
-                grid-template-columns: 1fr !important;
-                gap: 20px !important;
-                margin-top: 40px;
-            }
-        }
-
-        /* ============================================
-           SERVIÇOS
-        ============================================ */
+        /* ===== SERVICES SECTION ===== */
         .services-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1144,29 +918,8 @@
             transform: translateY(-2px);
         }
 
-        /* Serviços - Responsivo */
-        @media (max-width: 992px) and (min-width: 769px) {
-            .services-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .services-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .services-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ============================================
-           NOTÍCIAS
-        ============================================ */
-        .news-filter {
+        /* ===== NEWS SECTION ===== */
+        .news-filter, .gallery-filter {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
@@ -1174,7 +927,7 @@
             margin-bottom: 48px;
         }
 
-        .filter-btn {
+        .filter-btn, .gallery-filter-btn {
             padding: 10px 24px;
             border: none;
             background: white;
@@ -1187,7 +940,8 @@
             font-size: 0.875rem;
         }
 
-        .filter-btn:hover, .filter-btn.active {
+        .filter-btn:hover, .filter-btn.active,
+        .gallery-filter-btn:hover, .gallery-filter-btn.active {
             background: var(--primary);
             color: white;
             transform: translateY(-2px);
@@ -1313,53 +1067,10 @@
             gap: 10px;
         }
 
-        /* Notícias - Responsivo */
-        @media (max-width: 992px) and (min-width: 769px) {
-            .news-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .news-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ============================================
-           GALERIA
-        ============================================ */
-        .gallery-filter {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 48px;
-        }
-
-        .gallery-filter-btn {
-            padding: 10px 24px;
-            border: none;
-            background: white;
-            color: var(--gray-700);
-            font-weight: 600;
-            border-radius: 100px;
-            cursor: pointer;
-            transition: all var(--transition-base);
-            box-shadow: var(--shadow-sm);
-            font-size: 0.875rem;
-        }
-
-        .gallery-filter-btn:hover, .gallery-filter-btn.active {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
+        /* ===== GALLERY ===== */
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 24px;
             margin-bottom: 48px;
         }
@@ -1426,22 +1137,7 @@
             transform: translateY(0);
         }
 
-        /* Galeria - Responsivo */
-        @media (max-width: 992px) and (min-width: 769px) {
-            .gallery-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .gallery-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ============================================
-           DEPOIMENTOS
-        ============================================ */
+        /* ===== TESTIMONIALS ===== */
         .testimonials {
             background: linear-gradient(135deg, var(--gray-900) 0%, #1e1b4b 100%);
             position: relative;
@@ -1569,18 +1265,7 @@
             border-radius: 100px;
         }
 
-        @media (max-width: 768px) {
-            .testimonials-slider {
-                padding: 0 30px;
-            }
-            .testimonial-card {
-                padding: 25px;
-            }
-        }
-
-        /* ============================================
-           CONTATO
-        ============================================ */
+        /* ===== CONTACT ===== */
         .contact-info-cards {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -1676,6 +1361,16 @@
             box-shadow: 0 0 0 3px rgba(220,38,38,0.1);
         }
 
+        /* Validação visual de formulário */
+        .form-group input:invalid:not(:placeholder-shown),
+        .form-group textarea:invalid:not(:placeholder-shown) {
+            border-color: #ef4444;
+        }
+        .form-group input:valid:not(:placeholder-shown),
+        .form-group textarea:valid:not(:placeholder-shown) {
+            border-color: #10b981;
+        }
+
         .contact-map {
             border-radius: 24px;
             overflow: hidden;
@@ -1690,35 +1385,7 @@
             min-height: 400px;
         }
 
-        /* Contato - Responsivo */
-        @media (min-width: 769px) and (max-width: 992px) {
-            .contact-info-cards {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 25px !important;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .contact-info-cards {
-                grid-template-columns: 1fr !important;
-                gap: 20px !important;
-            }
-            .contact-main {
-                grid-template-columns: 1fr !important;
-                gap: 30px !important;
-            }
-            .contact-form {
-                order: 1 !important;
-            }
-            .contact-map {
-                order: 2 !important;
-                min-height: 300px !important;
-            }
-        }
-
-        /* ============================================
-           NEWSLETTER
-        ============================================ */
+        /* ===== NEWSLETTER ===== */
         .newsletter {
             padding: 70px 0;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -1739,7 +1406,7 @@
         }
 
         .newsletter h3 {
-            font-size: clamp(1.5rem, 5vw, 2rem);
+            font-size: 2rem;
             color: white;
             margin-bottom: 12px;
         }
@@ -1771,15 +1438,19 @@
             box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
         }
 
-        @media (max-width: 768px) {
-            .newsletter-form {
-                flex-direction: column;
-            }
+        /* Loading button */
+        .btn.loading {
+            opacity: 0.7;
+            cursor: wait;
+        }
+        .btn.loading i {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        /* ============================================
-           FOOTER
-        ============================================ */
+        /* ===== FOOTER ===== */
         .footer {
             background: var(--gray-900);
             color: white;
@@ -1921,89 +1592,7 @@
             gap: 16px;
         }
 
-        /* Footer - Responsivo */
-        @media (max-width: 992px) and (min-width: 769px) {
-            .footer-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 30px !important;
-            }
-            .footer-col:first-child {
-                grid-column: span 2 !important;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .footer-grid {
-                grid-template-columns: 1fr !important;
-                gap: 32px !important;
-            }
-            .footer-col {
-                text-align: center !important;
-            }
-            .footer-col h4::after {
-                left: 50% !important;
-                transform: translateX(-50%) !important;
-            }
-            .footer-logo {
-                justify-content: center !important;
-            }
-            .footer-social {
-                justify-content: center !important;
-            }
-            .footer-links a {
-                justify-content: center !important;
-            }
-            .footer-hours li {
-                justify-content: center !important;
-            }
-            .footer-emergency {
-                justify-content: center !important;
-                text-align: center !important;
-            }
-            .footer-bottom {
-                flex-direction: column !important;
-                text-align: center !important;
-                gap: 12px !important;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .footer-grid {
-                gap: 25px !important;
-            }
-            .footer-logo i {
-                font-size: 1.75rem !important;
-            }
-            .footer-logo h3 {
-                font-size: 1rem !important;
-            }
-            .footer-about {
-                font-size: 0.85rem !important;
-            }
-            .footer-social a {
-                width: 35px !important;
-                height: 35px !important;
-            }
-            .footer-links a {
-                font-size: 0.85rem !important;
-            }
-            .footer-hours li {
-                font-size: 0.85rem !important;
-            }
-            .footer-emergency {
-                padding: 12px !important;
-            }
-            .footer-emergency i {
-                font-size: 1.25rem !important;
-            }
-            .footer-bottom {
-                font-size: 0.75rem !important;
-            }
-        }
-
-        /* ============================================
-           MODAIS
-        ============================================ */
+        /* ===== MODALS ===== */
         .modal {
             display: none;
             position: fixed;
@@ -2068,7 +1657,55 @@
         .close-modal:hover {
             transform: scale(1.1);
         }
-        
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .container { padding: 0 20px; }
+            .section { padding: 60px 0; }
+            .stats-grid { gap: 20px; }
+        }
+
+        @media (max-width: 768px) {
+            .hamburger { display: flex; }
+            .nav-menu {
+                position: fixed;
+                top: 76px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 76px);
+                background: white;
+                transition: left var(--transition-base);
+                padding: 40px 20px;
+                z-index: 1001;
+            }
+            .nav-menu.active { left: 0; }
+            .nav-menu ul {
+                flex-direction: column;
+                align-items: center;
+                gap: 24px;
+            }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .about-grid { grid-template-columns: 1fr; }
+            .cards-container { grid-template-columns: 1fr; }
+            .contact-info-cards { grid-template-columns: 1fr; }
+            .contact-main { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+            .newsletter-form { flex-direction: column; }
+            .slider-arrow { display: none; }
+            .testimonials-slider { padding: 0 30px; }
+            
+            /* Footer mobile melhorado */
+            .footer-links li, .footer-hours li {
+                margin-bottom: 16px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .hero-title { font-size: 2rem; }
+            .hero-buttons { flex-direction: column; align-items: center; }
+            .btn { width: 100%; justify-content: center; }
+        }   
     </style>
 </head>
 <body>
@@ -2081,11 +1718,9 @@
             <div class="preloader-spinner"></div>
         </div>
     </div>
+    
 
-    <!-- OVERLAY DO MENU MOBILE -->
-    <div class="menu-overlay" id="menuOverlay"></div>
-
-    <!-- HEADER COM BOTÃO HAMBURGUER -->
+    <!-- HEADER -->
     <header class="header" id="header">
         <div class="container header-container">
             <a href="#home" class="logo">
@@ -2095,7 +1730,6 @@
                     <span class="logo-sub">Bombeiros Civis de Araruna</span>
                 </div>
             </a>
-            
             <nav class="nav-menu" id="navMenu">
                 <ul>
                     <li><a href="#home" class="active">Início</a></li>
@@ -2106,12 +1740,9 @@
                     <li><a href="#contato">Contato</a></li>
                 </ul>
             </nav>
-
-            <button class="hamburger" id="hamburger" aria-label="Menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+                <button class="hamburger" id="hamburger" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
         </div>
     </header>
 
@@ -2143,7 +1774,7 @@
                 <div class="stats-grid">
                     <div class="stat-item" data-aos="fade-up" data-aos-duration="600">
                         <i class="fas fa-calendar-alt"></i>
-                        <div class="stat-number" data-target="16">0</div>
+                        <div class="stat-number" data-target="15">0</div>
                         <div class="stat-label">Anos de experiência</div>
                     </div>
                     <div class="stat-item" data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
@@ -2175,181 +1806,123 @@
                 <div class="about-grid">
                     <div class="about-content" data-aos="fade-right">
                         <div class="about-text">
-                            <p class="about-highlight">A <strong>Araras Negras</strong> nasceu do sonho de um grupo de profissionais comprometidos com a segurança e o bem-estar da comunidade de Araruna.</p>
-                            <p>Somos uma equipe de Bombeiros Civis que atua há mais de 15 anos na prevenção e combate a incêndios, atendimento pré-hospitalar e resgate em situações de emergência. Nosso nome homenageia a arara negra, ave símbolo de nossa região, conhecida por sua resistência, inteligência e capacidade de adaptação - características que definem nossa equipe.</p>
+                            <p class="about-highlight" id="instHighlight">A <strong>Araras Negras</strong> nasceu do sonho de um grupo de profissionais comprometidos com a segurança de Araruna.</p>
+                            <p id="instText">Somos uma equipe de Bombeiros Civis que atua há mais de 15 anos na prevenção e combate a incêndios, atendimento pré-hospitalar e resgate em situações de emergência.</p>
                             <p>Contamos com profissionais altamente capacitados, treinamento contínuo e equipamentos modernos para oferecer o melhor serviço à população.</p>
                         </div>
                         <div class="about-features">
                             <div class="feature">
                                 <i class="fas fa-certificate"></i>
-                                <div><h4>Certificação Profissional</h4><p>Todos os membros possuem certificações atualizadas</p></div>
+                                <div>
+                                    <h4>Certificação Profissional</h4>
+                                    <p>Todos os membros possuem certificações atualizadas</p>
+                                </div>
                             </div>
                             <div class="feature">
                                 <i class="fas fa-clock"></i>
-                                <div><h4>Atendimento 24/7</h4><p>Prontos para atender emergências a qualquer hora</p></div>
+                                <div>
+                                    <h4>Atendimento 24/7</h4>
+                                    <p>Prontos para atender emergências a qualquer hora</p>
+                                </div>
                             </div>
                             <div class="feature">
                                 <i class="fas fa-shield-alt"></i>
-                                <div><h4>Equipamentos Modernos</h4><p>Tecnologia de ponta para maior eficiência</p></div>
+                                <div>
+                                    <h4>Equipamentos Modernos</h4>
+                                    <p>Tecnologia de ponta para maior eficiência</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="about-video" data-aos="fade-left">
                         <div class="video-wrapper" onclick="openVideoModal()">
                             <img id="videoThumbnail" src="https://img.youtube.com/vi/6eu824WqEvw/maxresdefault.jpg" alt="Vídeo Institucional" loading="lazy">
-                            <button class="video-play-btn" aria-label="Assistir vídeo"><i class="fas fa-play"></i></button>
+                            <button class="video-play-btn" aria-label="Assistir vídeo">
+                                <i class="fas fa-play"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
                 <div class="cards-container">
-                    <div class="card" data-aos="fade-up">
+                    <div class="card" data-aos="fade-up" data-aos-delay="0">
                         <div class="card-icon"><i class="fas fa-bullseye"></i></div>
                         <h3>Missão</h3>
-                        <p>Proteger vidas e patrimônios com profissionalismo, ética e respeito, atuando na prevenção e resposta a emergências.</p>
+                        <p id="missionText">Proteger vidas e patrimônios com profissionalismo, ética e respeito.</p>
                     </div>
                     <div class="card" data-aos="fade-up" data-aos-delay="100">
                         <div class="card-icon"><i class="fas fa-eye"></i></div>
                         <h3>Visão</h3>
-                        <p>Ser referência em segurança e atendimento de emergências na região, reconhecida pela excelência e comprometimento.</p>
+                        <p id="visionText">Ser referência em segurança e atendimento de emergências na região.</p>
                     </div>
                     <div class="card" data-aos="fade-up" data-aos-delay="200">
                         <div class="card-icon"><i class="fas fa-heart"></i></div>
                         <h3>Valores</h3>
-                        <p>Coragem, disciplina, respeito à vida, trabalho em equipe, melhoria contínua e amor à comunidade.</p>
+                        <p id="valuesText">Coragem, disciplina, respeito à vida, trabalho em equipe, melhoria contínua.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- SERVIÇOS FIXOS -->
+        <!-- SERVIÇOS -->
         <section id="servicos" class="section bg-light">
             <div class="container">
-                <div class="section-header" data-aos="fade-up"><span class="section-subtitle">O que fazemos</span><h2 class="section-title">Nossos Serviços</h2></div>
-                <div class="services-grid">
-                    <div class="service-card">
-                        <i class="fas fa-fire"></i>
-                        <h3>Combate a Incêndios</h3>
-                        <p>Atuação rápida e eficiente no combate a princípios de incêndio, com equipamentos modernos e equipe altamente treinada.</p>
-                        <a href="#contato" class="btn-small">Solicitar orçamento</a>
-                    </div>
-                    <div class="service-card">
-                        <i class="fas fa-heartbeat"></i>
-                        <h3>Primeiros Socorros</h3>
-                        <p>Atendimento pré-hospitalar qualificado em situações de emergência, garantindo os primeiros cuidados essenciais.</p>
-                        <a href="#contato" class="btn-small">Solicitar orçamento</a>
-                    </div>
-                    <div class="service-card">
-                        <i class="fas fa-mountain"></i>
-                        <h3>Resgate em Altura</h3>
-                        <p>Operações de resgate em locais de difícil acesso, como andaimes, torres e estruturas elevadas.</p>
-                        <a href="#contato" class="btn-small">Solicitar orçamento</a>
-                    </div>
-                    <div class="service-card">
-                        <i class="fas fa-chalkboard-teacher"></i>
-                        <h3>Treinamentos</h3>
-                        <p>Capacitação para empresas e comunidade em prevenção de incêndios e primeiros socorros.</p>
-                        <a href="#contato" class="btn-small">Solicitar orçamento</a>
-                    </div>
+                <div class="section-header" data-aos="fade-up">
+                    <span class="section-subtitle">O que fazemos</span>
+                    <h2 class="section-title">Nossos Serviços</h2>
                 </div>
+                <div class="services-grid" id="servicesGrid"></div>
             </div>
         </section>
 
         <!-- NOTÍCIAS -->
         <section id="noticias" class="section">
             <div class="container">
-                <div class="section-header" data-aos="fade-up"><span class="section-subtitle">Fique por dentro</span><h2 class="section-title">Últimas Notícias</h2></div>
+                <div class="section-header" data-aos="fade-up">
+                    <span class="section-subtitle">Fique por dentro</span>
+                    <h2 class="section-title">Últimas Notícias</h2>
+                </div>
                 <div class="news-filter" data-aos="fade-up">
                     <button class="filter-btn active" data-filter="all">Todas</button>
                     <button class="filter-btn" data-filter="treinamento">Treinamentos</button>
                     <button class="filter-btn" data-filter="operacao">Operações</button>
                     <button class="filter-btn" data-filter="evento">Eventos</button>
                 </div>
-                <div class="news-grid" id="newsContainer">
-                    <!-- Notícias serão carregadas dinamicamente -->
-                    <div class="news-card">
-                        <div class="news-image-wrapper">
-                            <img src="https://images.unsplash.com/photo-1582139329536-e7284fece509?w=600" class="news-image" loading="lazy" alt="Treinamento">
-                            <span class="news-category">Treinamento</span>
-                            <span class="news-date">15/03/2026</span>
-                        </div>
-                        <div class="news-content">
-                            <h3 class="news-title">Curso de Formação de Bombeiros Civis</h3>
-                            <p class="news-description">Novos profissionais estão sendo capacitados para atuar na prevenção e combate a incêndios.</p>
-                            <div class="news-meta">
-                                <div class="news-author"><i class="fas fa-user-circle"></i><span>Equipe Araras Negras</span></div>
-                                <a href="#" class="news-link">Ler mais <i class="fas fa-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="news-card">
-                        <div class="news-image-wrapper">
-                            <img src="https://images.unsplash.com/photo-1582139329536-e7284fece509?w=600" class="news-image" loading="lazy" alt="Operação">
-                            <span class="news-category">Operação</span>
-                            <span class="news-date">10/03/2026</span>
-                        </div>
-                        <div class="news-content">
-                            <h3 class="news-title">Operação de Resgate em Área de Risco</h3>
-                            <p class="news-description">Equipe atuou em conjunto com o Corpo de Bombeiros em ocorrência de grande porte.</p>
-                            <div class="news-meta">
-                                <div class="news-author"><i class="fas fa-user-circle"></i><span>Equipe Araras Negras</span></div>
-                                <a href="#" class="news-link">Ler mais <i class="fas fa-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
+                <div class="news-grid" id="newsContainer"></div>
+                <div class="text-center" data-aos="fade-up">
+                    <button id="loadMoreNews" class="btn btn-secondary">Carregar mais <i class="fas fa-arrow-down"></i></button>
                 </div>
-                <div class="text-center" data-aos="fade-up"><button id="loadMoreNews" class="btn btn-secondary">Carregar mais <i class="fas fa-arrow-down"></i></button></div>
             </div>
         </section>
 
         <!-- GALERIA -->
         <section id="galeria" class="section bg-light">
             <div class="container">
-                <div class="section-header" data-aos="fade-up"><span class="section-subtitle">Nossos momentos</span><h2 class="section-title">Galeria de Fotos</h2></div>
+                <div class="section-header" data-aos="fade-up">
+                    <span class="section-subtitle">Nossos momentos</span>
+                    <h2 class="section-title">Galeria de Fotos</h2>
+                </div>
                 <div class="gallery-filter" data-aos="fade-up">
                     <button class="gallery-filter-btn active" data-filter="all">Todos</button>
                     <button class="gallery-filter-btn" data-filter="treinamento">Treinamentos</button>
                     <button class="gallery-filter-btn" data-filter="operacao">Operações</button>
                     <button class="gallery-filter-btn" data-filter="equipe">Equipe</button>
                 </div>
-                <div class="gallery-grid" id="galleryGrid">
-                    <div class="gallery-item" onclick="openImageModal('https://images.unsplash.com/photo-1582139329536-e7284fece509?w=600', 'Treinamento')">
-                        <img src="https://images.unsplash.com/photo-1582139329536-e7284fece509?w=600" alt="Treinamento" loading="lazy">
-                        <div class="gallery-overlay"><h4>Treinamento</h4><p>Capacitação da equipe</p></div>
-                    </div>
-                    <div class="gallery-item" onclick="openImageModal('https://images.unsplash.com/photo-1582139329536-e7284fece509?w=600', 'Operação')">
-                        <img src="https://images.unsplash.com/photo-1582139329536-e7284fece509?w=600" alt="Operação" loading="lazy">
-                        <div class="gallery-overlay"><h4>Operação</h4><p>Atendimento emergencial</p></div>
-                    </div>
+                <div class="gallery-grid" id="galleryGrid"></div>
+                <div class="text-center" data-aos="fade-up">
+                    <button id="loadMoreGallery" class="btn btn-secondary">Ver mais <i class="fas fa-images"></i></button>
                 </div>
-                <div class="text-center" data-aos="fade-up"><button id="loadMoreGallery" class="btn btn-secondary">Ver mais <i class="fas fa-images"></i></button></div>
             </div>
         </section>
 
         <!-- DEPOIMENTOS -->
         <section class="section testimonials">
             <div class="container">
-                <div class="section-header" data-aos="fade-up"><span class="section-subtitle">O que dizem sobre nós</span><h2 class="section-title">Depoimentos</h2></div>
+                <div class="section-header" data-aos="fade-up">
+                    <span class="section-subtitle">O que dizem sobre nós</span>
+                    <h2 class="section-title">Depoimentos</h2>
+                </div>
                 <div class="testimonials-slider" data-aos="fade-up">
-                    <div class="testimonials-wrapper">
-                        <div class="testimonials-track">
-                            <div class="testimonial-card">
-                                <i class="fas fa-quote-left"></i>
-                                <p>Excelente equipe, muito profissional e dedicada. Atenderam nossa empresa com rapidez e eficiência.</p>
-                                <div class="testimonial-author">
-                                    <img src="https://images.unsplash.com/photo-1494790108777-466d85388023?w=100" alt="Cliente">
-                                    <div><h4>Maria Silva</h4><p>Empresária</p></div>
-                                </div>
-                            </div>
-                            <div class="testimonial-card">
-                                <i class="fas fa-quote-left"></i>
-                                <p>Trabalho fantástico! Os treinamentos ministrados pela Araras Negras transformaram nossa brigada de incêndio.</p>
-                                <div class="testimonial-author">
-                                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100" alt="Cliente">
-                                    <div><h4>João Santos</h4><p>Gestor de Segurança</p></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="testimonials-wrapper" id="testimonialsWrapper"></div>
                     <button class="testimonial-arrow prev" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
                     <button class="testimonial-arrow next" aria-label="Próximo"><i class="fas fa-chevron-right"></i></button>
                 </div>
@@ -2360,21 +1933,48 @@
         <!-- CONTATO -->
         <section id="contato" class="section">
             <div class="container">
-                <div class="section-header" data-aos="fade-up"><span class="section-subtitle">Fale conosco</span><h2 class="section-title">Entre em Contato</h2></div>
+                <div class="section-header" data-aos="fade-up">
+                    <span class="section-subtitle">Fale conosco</span>
+                    <h2 class="section-title">Entre em Contato</h2>
+                </div>
                 <div class="contact-wrapper">
                     <div class="contact-info-cards">
-                        <div class="contact-card" data-aos="fade-up"><i class="fas fa-phone-alt"></i><h3>Telefone</h3><p><a href="tel:83999999999">(83) 99999-9999</a></p></div>
-                        <div class="contact-card" data-aos="fade-up" data-aos-delay="100"><i class="fas fa-envelope"></i><h3>E-mail</h3><p><a href="mailto:contato@ararasnegras.com.br">contato@ararasnegras.com.br</a></p></div>
-                        <div class="contact-card" data-aos="fade-up" data-aos-delay="200"><i class="fas fa-map-marker-alt"></i><h3>Endereço</h3><p>Rua Principal, 123 - Centro, Araruna - PB</p></div>
+                        <div class="contact-card" data-aos="fade-up" data-aos-delay="0">
+                            <i class="fas fa-phone-alt"></i>
+                            <h3>Telefone</h3>
+                            <p><a href="tel:83999999999" id="contactPhone">(83) 99999-9999</a></p>
+                        </div>
+                        <div class="contact-card" data-aos="fade-up" data-aos-delay="100">
+                            <i class="fas fa-envelope"></i>
+                            <h3>E-mail</h3>
+                            <p><a href="mailto:contato@ararasnegras.com.br" id="contactEmailLink">contato@ararasnegras.com.br</a></p>
+                        </div>
+                        <div class="contact-card" data-aos="fade-up" data-aos-delay="200">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <h3>Endereço</h3>
+                            <p id="contactAddress">Rua Principal, 123 - Centro, Araruna - PB</p>
+                        </div>
                     </div>
                     <div class="contact-main">
                         <form id="contactForm" class="contact-form" data-aos="fade-right">
                             <h3>Envie uma mensagem</h3>
-                            <div class="form-group"><label>Nome completo *</label><input type="text" id="name" required></div>
-                            <div class="form-group"><label>E-mail *</label><input type="email" id="email" required></div>
-                            <div class="form-group"><label>Telefone</label><input type="tel" id="phone"></div>
-                            <div class="form-group"><label>Mensagem *</label><textarea id="message" rows="5" required></textarea></div>
-                            <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-paper-plane"></i> Enviar</button>
+                            <div class="form-group">
+                                <label>Nome completo *</label>
+                                <input type="text" id="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>E-mail *</label>
+                                <input type="email" id="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Telefone</label>
+                                <input type="tel" id="phone">
+                            </div>
+                            <div class="form-group">
+                                <label>Mensagem *</label>
+                                <textarea id="message" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block" id="submitContactBtn"><i class="fas fa-paper-plane"></i> Enviar</button>
                         </form>
                         <div class="contact-map" data-aos="fade-left">
                             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15835.123456789!2d-35.7550168!3d-6.5299161!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMzEnNDcuNyJTIDM1wrA0NScxOC4wIlc!5e0!3m2!1spt-BR!2sbr!4v1620000000000" allowfullscreen loading="lazy" title="Mapa de localização"></iframe>
@@ -2392,7 +1992,7 @@
                     <p>Inscreva-se para receber informações sobre treinamentos e ações da Araras Negras</p>
                     <form id="newsletterForm" class="newsletter-form">
                         <input type="email" placeholder="Seu melhor e-mail" required>
-                        <button type="submit" class="btn btn-primary">Inscrever-se</button>
+                        <button type="submit" class="btn btn-primary" id="newsletterBtn">Inscrever-se</button>
                     </form>
                 </div>
             </div>
@@ -2404,374 +2004,480 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
-                    <div class="footer-logo"><i class="fas fa-fire-extinguisher"></i><div><h3>Araras Negras</h3><p>Bombeiros Civis de Araruna</p></div></div>
+                    <div class="footer-logo">
+                        <i class="fas fa-fire-extinguisher"></i>
+                        <div>
+                            <h3>Araras Negras</h3>
+                            <p>Bombeiros Civis de Araruna</p>
+                        </div>
+                    </div>
                     <p class="footer-about">Protegendo vidas e patrimônios com excelência, coragem e dedicação 24 horas por dia.</p>
                     <div class="footer-social">
                         <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.instagram.com/equipe_araras_negras/" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                         <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
                         <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
-                <div class="footer-col"><h4>Links Rápidos</h4><ul class="footer-links"><li><a href="#home">Início</a></li><li><a href="#institucional">Institucional</a></li><li><a href="#servicos">Serviços</a></li><li><a href="#contato">Contato</a></li></ul></div>
-                <div class="footer-col"><h4>Serviços</h4><ul class="footer-links"><li><a href="#servicos">Combate a Incêndios</a></li><li><a href="#servicos">Primeiros Socorros</a></li><li><a href="#servicos">Resgate</a></li><li><a href="#servicos">Treinamentos</a></li></ul></div>
-                <div class="footer-col"><h4>Contato</h4><ul class="footer-hours"><li><i class="fas fa-clock"></i> <span>24 horas</span> - Todos os dias</li></ul><div class="footer-emergency"><i class="fas fa-phone-alt"></i><div><p>Emergência 24h</p><a href="tel:83999999999">(83) 99999-9999</a></div></div></div>
+                <div class="footer-col">
+                    <h4>Links Rápidos</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Início</a></li>
+                        <li><a href="#institucional">Institucional</a></li>
+                        <li><a href="#servicos">Serviços</a></li>
+                        <li><a href="#contato">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Serviços</h4>
+                    <ul class="footer-links">
+                        <li><a href="#servicos">Combate a Incêndios</a></li>
+                        <li><a href="#servicos">Primeiros Socorros</a></li>
+                        <li><a href="#servicos">Resgate</a></li>
+                        <li><a href="#servicos">Treinamentos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contato</h4>
+                    <ul class="footer-hours">
+                        <li><i class="fas fa-clock"></i> <span>24 horas</span> - Todos os dias</li>
+                    </ul>
+                    <div class="footer-emergency">
+                        <i class="fas fa-phone-alt"></i>
+                        <div>
+                            <p>Emergência 24h</p>
+                            <a href="tel:83999999999" id="footerEmergencyPhone">(83) 99999-9999</a>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="footer-bottom">
-                <div class="copyright"><p>&copy; 2026 Araras Negras - Todos os direitos reservados.</p></div>
-                <div class="footer-developer"><p>Desenvolvido por <a href="#" target="_blank">Araras Negras</a></p></div>
+                <div class="copyright">
+                    <p>&copy; 2026 Araras Negras - Todos os direitos reservados.</p>
+                </div>
+                <div class="footer-developer">
+                    <p>Desenvolvido por <a href="https://github.com/hugodeev" target="_blank" rel="noopener noreferrer">Victor Hugo</a></p>
+                </div>
             </div>
         </div>
     </footer>
 
     <!-- MODAIS -->
-    <div id="videoModal" class="modal"><div class="modal-content"><button class="close-modal" onclick="closeVideoModal()">&times;</button><div style="position:relative;padding-bottom:56.25%"><iframe id="videoFrame" style="position:absolute;top:0;left:0;width:100%;height:100%" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Vídeo Institucional"></iframe></div></div></div>
-    <div id="imageModal" class="modal"><div class="modal-content image-modal"><button class="close-modal" onclick="closeImageModal()">&times;</button><img id="modalImage" src="" alt="Imagem ampliada" loading="lazy"></div></div>
+    <div id="videoModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeVideoModal()">&times;</button>
+            <div style="position:relative;padding-bottom:56.25%">
+                <iframe id="videoFrame" style="position:absolute;top:0;left:0;width:100%;height:100%" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Vídeo Institucional"></iframe>
+            </div>
+        </div>
+    </div>
+    <div id="imageModal" class="modal">
+        <div class="modal-content image-modal">
+            <button class="close-modal" onclick="closeImageModal()">&times;</button>
+            <img id="modalImage" src="" alt="Imagem ampliada" loading="lazy">
+        </div>
+    </div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-    // ===== INICIALIZAÇÃO OTIMIZADA =====
-    
-    // AOS com configurações mais leves
-    AOS.init({ 
-        duration: 600,      // reduzi de 800 para 600ms
-        once: true,         // anima apenas uma vez
-        offset: 80,         // reduzido de 100 para 80
-        delay: 0,           // sem delay inicial
-        throttleDelay: 99,  // controle de performance
-        disable: window.innerWidth < 768 ? true : false, // desabilita no mobile
-        startEvent: 'DOMContentLoaded'  // inicia mais cedo
-    });
-    
-    // ===== MENU MOBILE =====
-    const hamburger = document.getElementById('hamburger');
-    const navMenu = document.getElementById('navMenu');
-    const menuOverlay = document.getElementById('menuOverlay');
-    
-    function closeMenu() {
-        hamburger?.classList.remove('active');
-        navMenu?.classList.remove('active');
-        menuOverlay?.classList.remove('active');
-        document.body.classList.remove('menu-open');
-    }
-    
-    function openMenu() {
-        hamburger?.classList.add('active');
-        navMenu?.classList.add('active');
-        menuOverlay?.classList.add('active');
-        document.body.classList.add('menu-open');
-    }
-    
-    function toggleMenu() {
-        if (navMenu?.classList.contains('active')) {
-            closeMenu();
-        } else {
-            openMenu();
-        }
-    }
-    
-    hamburger?.addEventListener('click', toggleMenu);
-    menuOverlay?.addEventListener('click', closeMenu);
-    document.querySelectorAll('.nav-menu a').forEach(link => {
-        link.addEventListener('click', closeMenu);
-    });
-    
-    window.addEventListener('resize', function() {
-        if (window.innerWidth > 768 && navMenu?.classList.contains('active')) {
-            closeMenu();
-        }
-    });
-    
-    // ===== FUNÇÕES =====
-    function setMobileVH() {
-        let vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
-    }
-    window.addEventListener('resize', setMobileVH);
-    setMobileVH();
-    
-    // Slider de Depoimentos (apenas se existir)
-    let currentTestimonial = 0;
-    let testimonialsInterval;
-    const testimonialsTrack = document.querySelector('.testimonials-track');
-    const testimonialCards = document.querySelectorAll('.testimonial-card');
-    const dotsContainer = document.querySelector('.testimonial-dots');
-    
-    if (testimonialCards.length > 0 && dotsContainer && testimonialsTrack) {
-        dotsContainer.innerHTML = '';
-        testimonialCards.forEach((_, i) => {
-            dotsContainer.innerHTML += `<div class="testimonial-dot ${i === 0 ? 'active' : ''}"></div>`;
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
         });
+
+        // ===== CHAVE DO LOCALSTORAGE (MESMA DO ADMIN) =====
+        const STORAGE_KEY = 'ararasnegras_public_data';
         
-        function showTestimonial(index) {
-            if (index < 0) index = testimonialCards.length - 1;
-            if (index >= testimonialCards.length) index = 0;
-            testimonialsTrack.style.transform = `translateX(-${index * 100}%)`;
-            currentTestimonial = index;
-            document.querySelectorAll('.testimonial-dot').forEach((dot, i) => {
-                dot.classList.toggle('active', i === index);
-            });
-        }
-        
-        document.querySelectorAll('.testimonial-dot').forEach((dot, i) => {
-            dot.addEventListener('click', () => {
-                showTestimonial(i);
-                clearInterval(testimonialsInterval);
-                testimonialsInterval = setInterval(() => showTestimonial(currentTestimonial + 1), 8000);
-            });
-        });
-        
-        document.querySelector('.testimonial-arrow.prev')?.addEventListener('click', () => {
-            showTestimonial(currentTestimonial - 1);
-            clearInterval(testimonialsInterval);
-            testimonialsInterval = setInterval(() => showTestimonial(currentTestimonial + 1), 8000);
-        });
-        
-        document.querySelector('.testimonial-arrow.next')?.addEventListener('click', () => {
-            showTestimonial(currentTestimonial + 1);
-            clearInterval(testimonialsInterval);
-            testimonialsInterval = setInterval(() => showTestimonial(currentTestimonial + 1), 8000);
-        });
-        
-        showTestimonial(0);
-        testimonialsInterval = setInterval(() => showTestimonial(currentTestimonial + 1), 8000);
-    }
-    
-    // Slider Hero (apenas se existir múltiplos slides)
-    let currentSlide = 0;
-    let slideInterval;
-    const slides = document.querySelectorAll('.slide');
-    const dotsContainerHero = document.querySelector('.slider-dots');
-    
-    if (slides.length > 1 && dotsContainerHero) {
-        dotsContainerHero.innerHTML = '';
-        slides.forEach((_, i) => {
-            dotsContainerHero.innerHTML += `<div class="slider-dot ${i === 0 ? 'active' : ''}"></div>`;
-        });
-        
-        function showSlide(index) {
-            if (index < 0) index = slides.length - 1;
-            if (index >= slides.length) index = 0;
-            slides.forEach(slide => slide.classList.remove('active'));
-            document.querySelectorAll('.slider-dot').forEach(dot => dot.classList.remove('active'));
-            slides[index].classList.add('active');
-            document.querySelectorAll('.slider-dot')[index]?.classList.add('active');
-            currentSlide = index;
-        }
-        
-        function nextSlide() { showSlide(currentSlide + 1); }
-        
-        document.querySelectorAll('.slider-dot').forEach((dot, i) => {
-            dot.addEventListener('click', () => {
-                showSlide(i);
-                clearInterval(slideInterval);
-                slideInterval = setInterval(nextSlide, 5000);
-            });
-        });
-        
-        document.querySelector('.slider-arrow.prev')?.addEventListener('click', () => {
-            showSlide(currentSlide - 1);
-            clearInterval(slideInterval);
-            slideInterval = setInterval(nextSlide, 5000);
-        });
-        
-        document.querySelector('.slider-arrow.next')?.addEventListener('click', () => {
-            nextSlide();
-            clearInterval(slideInterval);
-            slideInterval = setInterval(nextSlide, 5000);
-        });
-        
-        slideInterval = setInterval(nextSlide, 5000);
-    }
-    
-    // Filtros (Galeria e Notícias - apenas se existirem elementos)
-    const galleryFilterBtns = document.querySelectorAll('.gallery-filter-btn');
-    const galleryItems = document.querySelectorAll('.gallery-item');
-    
-    if (galleryFilterBtns.length && galleryItems.length) {
-        galleryFilterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const filter = btn.dataset.filter;
-                galleryFilterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                galleryItems.forEach(item => {
-                    if (filter === 'all' || item.dataset.category === filter) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            });
-        });
-    }
-    
-    const newsFilterBtns = document.querySelectorAll('.filter-btn');
-    const newsCards = document.querySelectorAll('.news-card');
-    
-    if (newsFilterBtns.length && newsCards.length) {
-        newsFilterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const filter = btn.dataset.filter;
-                newsFilterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                newsCards.forEach(card => {
-                    const category = card.querySelector('.news-category')?.textContent.toLowerCase();
-                    if (filter === 'all' || category === filter) {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-            });
-        });
-    }
-    
-    // Animações dos Stats (otimizada com requestAnimationFrame)
-    function animateStats() {
-        const stats = document.querySelectorAll('.stat-number');
-        stats.forEach(stat => {
-            const target = parseInt(stat.dataset.target);
-            let current = 0;
-            const increment = Math.ceil(target / 30);
-            const updateNumber = () => {
-                current += increment;
-                if (current >= target) {
-                    stat.innerText = target;
-                } else {
-                    stat.innerText = current;
-                    requestAnimationFrame(updateNumber);
-                }
-            };
-            requestAnimationFrame(updateNumber);
-        });
-    }
-    
-    // Observable para stats mais leve
-    const statsObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                animateStats();
-                statsObserver.disconnect();
+        // ===== DADOS PADRÃO =====
+        let siteData = {
+            home: { slides: [] },
+            institucional: {
+                highlight: "A Araras Negras nasceu do sonho de um grupo de profissionais comprometidos com a segurança e o bem-estar da comunidade de Araruna.",
+                text: "Somos uma equipe de Bombeiros Civis que atua há mais de 15 anos na prevenção e combate a incêndios, atendimento pré-hospitalar e resgate em situações de emergência.",
+                mission: "Proteger vidas e patrimônios com profissionalismo, ética e respeito, atuando na prevenção e resposta a emergências.",
+                vision: "Ser referência em segurança e atendimento de emergências na região, reconhecida pela excelência e comprometimento.",
+                values: "Coragem, disciplina, respeito à vida, trabalho em equipe, melhoria contínua e amor à comunidade.",
+                videoUrl: "6eu824WqEvw",
+                videoThumb: ""
+            },
+            noticias: [],
+            galeria: [],
+            servicos: [
+                { icon: "fa-fire", title: "Combate a Incêndios", description: "Atuação rápida e eficiente no combate a princípios de incêndio." },
+                { icon: "fa-heartbeat", title: "Primeiros Socorros", description: "Atendimento pré-hospitalar qualificado." },
+                { icon: "fa-mountain", title: "Resgate em Altura", description: "Operações de resgate em locais de difícil acesso." },
+                { icon: "fa-chalkboard-teacher", title: "Treinamentos", description: "Capacitação para empresas e comunidade." }
+            ],
+            depoimentos: [],
+            config: {
+                emergencyPhone: "(83) 99999-9999",
+                contactEmail: "contato@ararasnegras.com.br",
+                contactAddress: "Rua Principal, 123 - Centro, Araruna - PB",
+                whatsappNumber: "5583999999999"
             }
-        });
-    }, { threshold: 0.1 });
-    
-    const statsSection = document.querySelector('.stats-section');
-    if (statsSection) statsObserver.observe(statsSection);
-    
-    // Header Scroll Effect (otimizado com throttling)
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-        if (!ticking) {
-            requestAnimationFrame(() => {
-                const header = document.getElementById('header');
-                if (header) {
-                    header.classList.toggle('scrolled', window.scrollY > 50);
-                }
-                ticking = false;
-            });
-            ticking = true;
+        };
+        
+        let currentSlide = 0, slideInterval, currentTestimonial = 0, testimonialsInterval;
+        let currentNewsFilter = 'all', currentGalleryFilter = 'all';
+        let currentNewsIndex = 0, currentGalleryIndex = 0;
+        const newsPerPage = 3, galleryPerPage = 6;
+        
+        // ===== HEADER DARK BG DETECTION =====
+        function updateHeaderBg() {
+            const header = document.getElementById('header');
+            const statsSection = document.querySelector('.stats-section');
+            const testimonialsSection = document.querySelector('.testimonials');
+            
+            if (!header) return;
+            
+            const statsRect = statsSection?.getBoundingClientRect();
+            const testimonialsRect = testimonialsSection?.getBoundingClientRect();
+            const scrollY = window.scrollY;
+            
+            if ((statsRect && scrollY + 100 > statsRect.top) || 
+                (testimonialsRect && scrollY + 100 > testimonialsRect.top)) {
+                header.classList.add('dark-bg');
+            } else {
+                header.classList.remove('dark-bg');
+            }
         }
-    });
-    
-    // Smooth Scroll (apenas para links internos)
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-            const target = document.querySelector(targetId);
-            if (target) {
+        
+        // ===== CARREGAR DADOS DO ADMIN =====
+        function loadPublicData() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    const loadedData = JSON.parse(saved);
+                    siteData = loadedData;
+                    console.log('✅ Dados carregados do painel administrativo!');
+                } catch(e) { console.error('Erro ao carregar dados:', e); }
+            } else {
+                console.log('⚠️ Nenhum dado encontrado. Usando dados padrão.');
+                if (siteData.home.slides.length === 0) {
+                    siteData.home.slides = [
+                        {
+                            id: "default1",
+                            tagline: "Bem-vindo à",
+                            title: "Araras Negras",
+                            subtitle: "Protegendo vidas e patrimônios com a garra da nossa terra",
+                            image: "https://images.unsplash.com/photo-1582139329536-e7284fece509?w=1920"
+                        }
+                    ];
+                }
+            }
+            renderAll();
+        }
+        
+        function renderAll() {
+            renderSlides();
+            renderInstitutional();
+            renderServices();
+            renderNews();
+            renderGallery();
+            renderTestimonials();
+            renderContacts();
+        }
+        
+        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { return m === '&' ? '&amp;' : m === '<' ? '&lt;' : m === '>' ? '&gt;' : m; }); }
+        
+        // ===== SLIDES =====
+        function renderSlides() {
+            const heroSlider = document.getElementById('heroSlider');
+            const slides = siteData.home.slides;
+            
+            if (slides && slides.length > 0) {
+                heroSlider.innerHTML = '';
+                slides.forEach((slide, index) => {
+                    heroSlider.innerHTML += `<div class="slide ${index === 0 ? 'active' : ''}">
+                        <div class="slide-bg" style="background-image: url('${slide.image}')"></div>
+                        <div class="container hero-content">
+                            <span class="hero-tagline">${escapeHtml(slide.tagline || 'Bem-vindo à')}</span>
+                            <h1 class="hero-title">${escapeHtml(slide.title || 'Araras Negras')}</h1>
+                            <p class="hero-subtitle">${escapeHtml(slide.subtitle || 'Protegendo vidas e patrimônios')}</p>
+                            <div class="hero-buttons">
+                                <a href="#institucional" class="btn btn-primary">Conheça-nos</a>
+                                <a href="#contato" class="btn btn-outline">Fale conosco</a>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+                setupHeroSlider();
+            } else {
+                heroSlider.innerHTML = `<div class="slide active">
+                    <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1582139329536-e7284fece509?w=1920')"></div>
+                    <div class="container hero-content">
+                        <span class="hero-tagline">Bem-vindo à</span>
+                        <h1 class="hero-title">Araras Negras</h1>
+                        <p class="hero-subtitle">Protegendo vidas e patrimônios com a garra da nossa terra</p>
+                        <div class="hero-buttons">
+                            <a href="#institucional" class="btn btn-primary">Conheça-nos</a>
+                            <a href="#contato" class="btn btn-outline">Fale conosco</a>
+                        </div>
+                    </div>
+                </div>`;
+                setupHeroSlider();
+            }
+        }
+        
+        function setupHeroSlider() {
+            if (slideInterval) clearInterval(slideInterval);
+            const slides = document.querySelectorAll('.slide');
+            const dotsContainer = document.querySelector('.slider-dots');
+            if (slides.length === 0) return;
+            
+            dotsContainer.innerHTML = '';
+            slides.forEach((_, i) => { dotsContainer.innerHTML += `<div class="slider-dot ${i === 0 ? 'active' : ''}"></div>`; });
+            
+            const dots = document.querySelectorAll('.slider-dot');
+            dots.forEach((dot, i) => dot.addEventListener('click', () => goToSlide(i)));
+            
+            function showSlide(index) {
+                if (index < 0) index = slides.length - 1;
+                if (index >= slides.length) index = 0;
+                slides.forEach(s => s.classList.remove('active'));
+                dots.forEach(d => d.classList.remove('active'));
+                slides[index].classList.add('active');
+                if (dots[index]) dots[index].classList.add('active');
+                currentSlide = index;
+            }
+            
+            function nextSlide() { showSlide(currentSlide + 1); }
+            function prevSlide() { showSlide(currentSlide - 1); }
+            
+            window.goToSlide = (i) => { showSlide(i); clearInterval(slideInterval); slideInterval = setInterval(nextSlide, 5000); };
+            
+            showSlide(0);
+            slideInterval = setInterval(nextSlide, 5000);
+            
+            const prevBtn = document.querySelector('.slider-arrow.prev');
+            const nextBtn = document.querySelector('.slider-arrow.next');
+            
+            if (prevBtn) {
+                prevBtn.replaceWith(prevBtn.cloneNode(true));
+                document.querySelector('.slider-arrow.prev')?.addEventListener('click', () => { 
+                    prevSlide(); 
+                    clearInterval(slideInterval); 
+                    slideInterval = setInterval(nextSlide, 5000); 
+                });
+            }
+            
+            if (nextBtn) {
+                nextBtn.replaceWith(nextBtn.cloneNode(true));
+                document.querySelector('.slider-arrow.next')?.addEventListener('click', () => { 
+                    nextSlide(); 
+                    clearInterval(slideInterval); 
+                    slideInterval = setInterval(nextSlide, 5000); 
+                });
+            }
+        }
+        
+        // ===== INSTITUCIONAL =====
+        function renderInstitutional() {
+            if (siteData.institucional) {
+                document.getElementById('instHighlight').innerHTML = `A <strong>Araras Negras</strong> ${escapeHtml(siteData.institucional.highlight || '')}`;
+                document.getElementById('instText').textContent = siteData.institucional.text || '';
+                document.getElementById('missionText').textContent = siteData.institucional.mission || '';
+                document.getElementById('visionText').textContent = siteData.institucional.vision || '';
+                document.getElementById('valuesText').textContent = siteData.institucional.values || '';
+                if (siteData.institucional.videoThumb) document.getElementById('videoThumbnail').src = siteData.institucional.videoThumb;
+                window.YOUTUBE_VIDEO_ID = siteData.institucional.videoUrl || '6eu824WqEvw';
+            }
+        }
+        
+        // ===== SERVIÇOS =====
+        function renderServices() {
+            const container = document.getElementById('servicesGrid');
+            const services = siteData.servicos || [];
+            if (!services.length) { container.innerHTML = '<p style="text-align:center;padding:40px;">Nenhum serviço cadastrado.</p>'; return; }
+            container.innerHTML = services.map(s => `<div class="service-card"><i class="fas ${s.icon || 'fa-shield-alt'}"></i><h3>${escapeHtml(s.title)}</h3><p>${escapeHtml(s.description)}</p><a href="#contato" class="btn-small">Solicitar orçamento</a></div>`).join('');
+        }
+        
+        // ===== NOTÍCIAS =====
+        function renderNews() {
+            const container = document.getElementById('newsContainer');
+            const news = siteData.noticias || [];
+            const filtered = currentNewsFilter === 'all' ? news : news.filter(n => n.category === currentNewsFilter);
+            const visible = filtered.slice(0, newsPerPage);
+            if (!visible.length) { container.innerHTML = '<p style="text-align:center;padding:40px;">Nenhuma notícia cadastrada.</p>'; return; }
+            container.innerHTML = visible.map(n => `<div class="news-card"><div class="news-image-wrapper"><img src="${n.image || 'https://images.unsplash.com/photo-1582139329536-e7284fece509?w=600'}" class="news-image" loading="lazy" alt="${escapeHtml(n.title)}"><span class="news-category">${escapeHtml(n.category)}</span><span class="news-date">${escapeHtml(n.date || new Date().toLocaleDateString('pt-BR'))}</span></div><div class="news-content"><h3 class="news-title">${escapeHtml(n.title)}</h3><p class="news-description">${escapeHtml(n.description)}</p><div class="news-meta"><div class="news-author"><i class="fas fa-user-circle"></i><span>${escapeHtml(n.author || 'Equipe Araras Negras')}</span></div><a href="#" class="news-link">Ler mais <i class="fas fa-arrow-right"></i></a></div></div></div>`).join('');
+            document.getElementById('loadMoreNews').style.display = filtered.length <= newsPerPage ? 'none' : 'inline-flex';
+        }
+        
+        // ===== GALERIA =====
+        function renderGallery() {
+            const container = document.getElementById('galleryGrid');
+            const gallery = siteData.galeria || [];
+            const filtered = currentGalleryFilter === 'all' ? gallery : gallery.filter(g => g.category === currentGalleryFilter);
+            const visible = filtered.slice(0, galleryPerPage);
+            if (!visible.length) { container.innerHTML = '<p style="text-align:center;padding:40px;">Nenhuma foto na galeria.</p>'; return; }
+            container.innerHTML = visible.map(g => `<div class="gallery-item" onclick="openImageModal('${g.src}', '${escapeHtml(g.title)}')"><img src="${g.src}" alt="${escapeHtml(g.title)}" loading="lazy"><div class="gallery-overlay"><h4>${escapeHtml(g.title)}</h4><p>${escapeHtml(g.description || '')}</p></div></div>`).join('');
+            document.getElementById('loadMoreGallery').style.display = filtered.length <= galleryPerPage ? 'none' : 'inline-flex';
+        }
+        
+        // ===== DEPOIMENTOS =====
+        function renderTestimonials() {
+            const wrapper = document.getElementById('testimonialsWrapper');
+            const testimonials = siteData.depoimentos || [];
+            if (!testimonials.length) { wrapper.innerHTML = '<p style="text-align:center;padding:40px;color:#fff;">Nenhum depoimento cadastrado.</p>'; return; }
+            wrapper.innerHTML = `<div class="testimonials-track">${testimonials.map(t => `<div class="testimonial-card"><i class="fas fa-quote-left"></i><p>${escapeHtml(t.text)}</p><div class="testimonial-author"><img src="${t.image || 'https://images.unsplash.com/photo-1494790108777-466d85388023?w=100'}" alt="${escapeHtml(t.name)}" loading="lazy"><div><h4>${escapeHtml(t.name)}</h4><p>${escapeHtml(t.role)}</p></div></div></div>`).join('')}</div>`;
+            const track = wrapper.querySelector('.testimonials-track');
+            const dotsContainer = document.querySelector('.testimonial-dots');
+            dotsContainer.innerHTML = '';
+            testimonials.forEach((_, i) => { dotsContainer.innerHTML += `<div class="testimonial-dot ${i === 0 ? 'active' : ''}"></div>`; });
+            function showTestimonial(index) { if (index < 0) index = testimonials.length - 1; if (index >= testimonials.length) index = 0; track.style.transform = `translateX(-${index * 100}%)`; currentTestimonial = index; document.querySelectorAll('.testimonial-dot').forEach((d, i) => d.classList.toggle('active', i === index)); }
+            document.querySelectorAll('.testimonial-dot').forEach((d, i) => d.addEventListener('click', () => { showTestimonial(i); clearInterval(testimonialsInterval); testimonialsInterval = setInterval(() => showTestimonial(currentTestimonial + 1), 8000); }));
+            document.querySelector('.testimonial-arrow.prev')?.addEventListener('click', () => { showTestimonial(currentTestimonial - 1); clearInterval(testimonialsInterval); testimonialsInterval = setInterval(() => showTestimonial(currentTestimonial + 1), 8000); });
+            document.querySelector('.testimonial-arrow.next')?.addEventListener('click', () => { showTestimonial(currentTestimonial + 1); clearInterval(testimonialsInterval); testimonialsInterval = setInterval(() => showTestimonial(currentTestimonial + 1), 8000); });
+            showTestimonial(0);
+            if (testimonialsInterval) clearInterval(testimonialsInterval);
+            testimonialsInterval = setInterval(() => showTestimonial(currentTestimonial + 1), 8000);
+        }
+        
+        // ===== CONTATOS =====
+        function renderContacts() {
+            const cfg = siteData.config || {};
+            const phone = cfg.emergencyPhone || '(83) 99999-9999';
+            const email = cfg.contactEmail || 'contato@ararasnegras.com.br';
+            const address = cfg.contactAddress || 'Rua Principal, 123 - Centro, Araruna - PB';
+            
+            document.getElementById('emergencyPhoneLink').href = `tel:${phone}`;
+            document.getElementById('contactPhone').href = `tel:${phone}`;
+            document.getElementById('contactPhone').textContent = phone;
+            document.getElementById('footerEmergencyPhone').href = `tel:${phone}`;
+            document.getElementById('footerEmergencyPhone').textContent = phone;
+            document.getElementById('contactEmailLink').href = `mailto:${email}`;
+            document.getElementById('contactEmailLink').textContent = email;
+            document.getElementById('contactAddress').textContent = address;
+        }
+        
+        // ===== FILTROS =====
+        function filterNews(filter) { currentNewsFilter = filter; renderNews(); document.querySelectorAll('.filter-btn').forEach(btn => { btn.classList.toggle('active', btn.dataset.filter === filter); }); }
+        function filterGallery(filter) { currentGalleryFilter = filter; renderGallery(); document.querySelectorAll('.gallery-filter-btn').forEach(btn => { btn.classList.toggle('active', btn.dataset.filter === filter); }); }
+        function loadMoreNews() { const all = siteData.noticias || []; const filtered = currentNewsFilter === 'all' ? all : all.filter(n => n.category === currentNewsFilter); currentNewsIndex += newsPerPage; const next = filtered.slice(currentNewsIndex, currentNewsIndex + newsPerPage); const container = document.getElementById('newsContainer'); next.forEach(n => { container.innerHTML += `<div class="news-card"><div class="news-image-wrapper"><img src="${n.image || 'https://images.unsplash.com/photo-1582139329536-e7284fece509?w=600'}" class="news-image" loading="lazy"><span class="news-category">${escapeHtml(n.category)}</span><span class="news-date">${escapeHtml(n.date || new Date().toLocaleDateString('pt-BR'))}</span></div><div class="news-content"><h3 class="news-title">${escapeHtml(n.title)}</h3><p class="news-description">${escapeHtml(n.description)}</p><div class="news-meta"><div class="news-author"><i class="fas fa-user-circle"></i><span>${escapeHtml(n.author || 'Equipe Araras Negras')}</span></div><a href="#" class="news-link">Ler mais <i class="fas fa-arrow-right"></i></a></div></div></div>`; }); if (currentNewsIndex + newsPerPage >= filtered.length) document.getElementById('loadMoreNews').style.display = 'none'; }
+        function loadMoreGallery() { const all = siteData.galeria || []; const filtered = currentGalleryFilter === 'all' ? all : all.filter(g => g.category === currentGalleryFilter); currentGalleryIndex += galleryPerPage; const next = filtered.slice(currentGalleryIndex, currentGalleryIndex + galleryPerPage); const container = document.getElementById('galleryGrid'); next.forEach(g => { container.innerHTML += `<div class="gallery-item" onclick="openImageModal('${g.src}', '${escapeHtml(g.title)}')"><img src="${g.src}" alt="${escapeHtml(g.title)}" loading="lazy"><div class="gallery-overlay"><h4>${escapeHtml(g.title)}</h4><p>${escapeHtml(g.description || '')}</p></div></div>`; }); if (currentGalleryIndex + galleryPerPage >= filtered.length) document.getElementById('loadMoreGallery').style.display = 'none'; }
+        
+        // ===== MODAIS =====
+        function openVideoModal() { const modal = document.getElementById('videoModal'); const frame = document.getElementById('videoFrame'); frame.src = `https://www.youtube.com/embed/${window.YOUTUBE_VIDEO_ID || '6eu824WqEvw'}?autoplay=1&rel=0`; modal.classList.add('show'); document.body.style.overflow = 'hidden'; }
+        function closeVideoModal() { const modal = document.getElementById('videoModal'); document.getElementById('videoFrame').src = ''; modal.classList.remove('show'); document.body.style.overflow = ''; }
+        function openImageModal(src, title) { const modal = document.getElementById('imageModal'); const img = document.getElementById('modalImage'); img.src = src; img.alt = title; modal.classList.add('show'); document.body.style.overflow = 'hidden'; }
+        function closeImageModal() { document.getElementById('imageModal').classList.remove('show'); document.body.style.overflow = ''; }
+        window.openVideoModal = openVideoModal; window.closeVideoModal = closeVideoModal; window.openImageModal = openImageModal; window.closeImageModal = closeImageModal;
+        
+        // ===== ANIMAÇÕES =====
+        function animateStats() { 
+            document.querySelectorAll('.stat-number').forEach(stat => { 
+                const target = parseInt(stat.dataset.target); 
+                const current = parseInt(stat.innerText); 
+                if (current < target) { 
+                    stat.innerText = Math.min(current + Math.ceil(target / 50), target); 
+                    setTimeout(animateStats, 20); 
+                } else stat.innerText = target; 
+            }); 
+        }
+        
+        const statsObserver = new IntersectionObserver((entries) => { 
+            entries.forEach(entry => { 
+                if (entry.isIntersecting) { 
+                    animateStats(); 
+                    statsObserver.disconnect(); 
+                } 
+            }); 
+        }, { threshold: 0.3 });
+        
+        const statsSection = document.querySelector('.stats-section');
+        if (statsSection) statsObserver.observe(statsSection);
+        
+        // ===== EVENTOS =====
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.addEventListener('click', () => filterNews(btn.dataset.filter)));
+        document.querySelectorAll('.gallery-filter-btn').forEach(btn => btn.addEventListener('click', () => filterGallery(btn.dataset.filter)));
+        document.getElementById('loadMoreNews')?.addEventListener('click', loadMoreNews);
+        document.getElementById('loadMoreGallery')?.addEventListener('click', loadMoreGallery);
+        
+        // Mobile Menu
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+        hamburger?.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        });
+        
+        // Scroll Header Effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (header) header.classList.toggle('scrolled', window.scrollY > 50);
+            updateHeaderBg();
+        });
+        updateHeaderBg();
+        
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
                 e.preventDefault();
-                window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
-            }
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+                    hamburger?.classList.remove('active');
+                    navMenu?.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
         });
-    });
-    
-    // Formulários (apenas se existirem)
-    document.getElementById('contactForm')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('submitContactBtn');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-        btn.disabled = true;
-        await new Promise(resolve => setTimeout(resolve, 500));
-        alert('✅ Mensagem enviada com sucesso!');
-        e.target.reset();
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-    });
-    
-    document.getElementById('newsletterForm')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('newsletterBtn');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Inscrevendo...';
-        btn.disabled = true;
-        await new Promise(resolve => setTimeout(resolve, 400));
-        alert('✅ Inscrição realizada com sucesso!');
-        e.target.reset();
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-    });
-    
-    // Modais
-    function openVideoModal() {
-        const modal = document.getElementById('videoModal');
-        const frame = document.getElementById('videoFrame');
-        frame.src = 'https://www.youtube.com/embed/6eu824WqEvw?autoplay=1&rel=0';
-        modal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-    }
-    
-    function closeVideoModal() {
-        const modal = document.getElementById('videoModal');
-        document.getElementById('videoFrame').src = '';
-        modal.classList.remove('show');
-        document.body.style.overflow = '';
-    }
-    
-    function openImageModal(src, title) {
-        const modal = document.getElementById('imageModal');
-        const img = document.getElementById('modalImage');
-        img.src = src;
-        img.alt = title;
-        modal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-    }
-    
-    function closeImageModal() {
-        document.getElementById('imageModal').classList.remove('show');
-        document.body.style.overflow = '';
-    }
-    
-    window.openVideoModal = openVideoModal;
-    window.closeVideoModal = closeVideoModal;
-    window.openImageModal = openImageModal;
-    window.closeImageModal = closeImageModal;
-    
-    window.addEventListener('click', (e) => {
-        if (e.target.classList.contains('modal')) {
-            closeVideoModal();
-            closeImageModal();
-        }
-    });
-    
-    window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeVideoModal();
-            closeImageModal();
-        }
-    });
-    
-    // PRELOADER - removido para carregamento mais rápido
-    // (o preloader será removido imediatamente)
-    const preloader = document.querySelector('.preloader');
-    if (preloader) {
-        preloader.style.display = 'none';
-    }
-</script>
+        
+        // Forms com loading state
+        document.getElementById('contactForm')?.addEventListener('submit', async (e) => { 
+            e.preventDefault();
+            const btn = document.getElementById('submitContactBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            btn.disabled = true;
+            btn.classList.add('loading');
+            
+            // Simular envio
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            alert('✅ Mensagem enviada com sucesso! A equipe Araras Negras entrará em contato em breve.'); 
+            e.target.reset();
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            btn.classList.remove('loading');
+        });
+        
+        document.getElementById('newsletterForm')?.addEventListener('submit', async (e) => { 
+            e.preventDefault();
+            const btn = document.getElementById('newsletterBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Inscrevendo...';
+            btn.disabled = true;
+            btn.classList.add('loading');
+            
+            await new Promise(resolve => setTimeout(resolve, 800));
+            
+            alert('✅ Inscrição realizada com sucesso!'); 
+            e.target.reset();
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            btn.classList.remove('loading');
+        });
+        
+        // Modals Close
+        window.addEventListener('click', (e) => { 
+            if (e.target.classList.contains('modal')) { closeVideoModal(); closeImageModal(); }
+        });
+        
+        window.addEventListener('keydown', (e) => { 
+            if (e.key === 'Escape') { closeVideoModal(); closeImageModal(); }
+        });
+        
+        // ===== INICIALIZAR =====
+        window.addEventListener('load', () => {
+            setTimeout(() => document.querySelector('.preloader')?.classList.add('fade-out'), 2000);
+            loadPublicData();
+        });
+    </script>
 </body>
 </html>
