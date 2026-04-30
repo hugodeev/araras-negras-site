@@ -2408,30 +2408,44 @@ body.menu-open {
         }
         
         // ===== CARREGAR DADOS DO ADMIN =====
-        function loadPublicData() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                try {
-                    const loadedData = JSON.parse(saved);
-                    siteData = loadedData;
-                    console.log('✅ Dados carregados do painel administrativo!');
-                } catch(e) { console.error('Erro ao carregar dados:', e); }
-            } else {
-                console.log('⚠️ Nenhum dado encontrado. Usando dados padrão.');
-                if (siteData.home.slides.length === 0) {
-                    siteData.home.slides = [
-                        {
-                            id: "default1",
-                            tagline: "Bem-vindo à",
-                            title: "Araras Negras",
-                            subtitle: "Protegendo vidas e patrimônios com a garra da nossa terra",
-                            image: "https://images.unsplash.com/photo-1582139329536-e7284fece509?w=1920"
-                        }
-                    ];
-                }
-            }
+       const API_URL = 'http://localhost:3000/api';
+
+async function loadPublicData() {
+    try {
+        // Buscar dados da API
+        const [noticias, slides, galeria, servicos, depoimentos, config] = await Promise.all([
+            fetch(`${API_URL}/noticias`).then(r => r.json()),
+            fetch(`${API_URL}/slides`).then(r => r.json()),
+            fetch(`${API_URL}/galeria`).then(r => r.json()),
+            fetch(`${API_URL}/servicos`).then(r => r.json()),
+            fetch(`${API_URL}/depoimentos`).then(r => r.json()),
+            fetch(`${API_URL}/config`).then(r => r.json())
+        ]);
+        
+        // Atualizar dados do site
+        siteData.noticias = noticias;
+        siteData.home.slides = slides;
+        siteData.galeria = galeria;
+        siteData.servicos = servicos;
+        siteData.depoimentos = depoimentos;
+        siteData.config = config;
+        
+        // Renderizar tudo
+        renderAll();
+        
+        console.log('✅ Dados carregados da API com sucesso!');
+    } catch (error) {
+        console.error('❌ Erro ao carregar dados da API:', error);
+        
+        // Fallback para localStorage se a API falhar
+        const saved = localStorage.getItem('ararasnegras_public_data');
+        if (saved) {
+            siteData = JSON.parse(saved);
             renderAll();
+            console.log('⚠️ Usando dados do localStorage (fallback)');
         }
+    }
+}
         
         function renderAll() {
             renderSlides();
