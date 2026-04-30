@@ -1716,6 +1716,118 @@
             .hero-buttons { flex-direction: column; align-items: center; }
             .btn { width: 100%; justify-content: center; }
         }   
+
+        /* ===== MENU MOBILE ===== */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 1002;
+    position: relative;
+}
+
+.hamburger span {
+    width: 26px;
+    height: 2px;
+    background: var(--gray-800);
+    transition: all var(--transition-base);
+    border-radius: 100px;
+}
+
+.hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+    transform: translateX(-10px);
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-base);
+}
+
+.menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Menu Mobile */
+@media (max-width: 768px) {
+    .hamburger {
+        display: flex;
+    }
+
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 280px;
+        height: 100dvh;
+        background: linear-gradient(135deg, #0f172a, #1e1b4b);
+        padding: 100px 24px 20px;
+        transition: left 0.3s ease;
+        z-index: 1001;
+        overflow-y: auto;
+        box-shadow: 5px 0 30px rgba(0,0,0,0.3);
+        display: block !important;
+    }
+
+    .nav-menu.active {
+        left: 0;
+        display: block !important;
+    }
+
+    .nav-menu ul {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 24px;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+
+    .nav-menu a {
+        color: white;
+        font-size: 1.125rem;
+        padding: 8px 0;
+        display: inline-block;
+    }
+
+    .nav-menu a::after {
+        bottom: 0;
+        background: var(--primary);
+    }
+
+    .nav-menu a:hover,
+    .nav-menu a.active {
+        color: var(--primary-light);
+    }
+}
+
+body.menu-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+}
     </style>
 </head>
 <body>
@@ -1740,6 +1852,7 @@
                 <span class="logo-sub">Bombeiros Civis de Araruna</span>
             </div>
         </a>
+        
         <nav class="nav-menu" id="navMenu">
             <ul>
                 <li><a href="#home" class="active">Início</a></li>
@@ -1750,8 +1863,17 @@
                 <li><a href="#contato">Contato</a></li>
             </ul>
         </nav>
+
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </div>
 </header>
+
+<!-- OVERLAY DO MENU MOBILE -->
+<div class="menu-overlay" id="menuOverlay"></div>
 
     <main>
         <!-- HERO SLIDER -->
@@ -2411,16 +2533,6 @@
         });
         updateHeaderBg();
         
-        // Smooth Scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
-                }
-            });
-        });
         
         // Forms com loading state
         document.getElementById('contactForm')?.addEventListener('submit', async (e) => { 
@@ -2474,6 +2586,79 @@
             setTimeout(() => document.querySelector('.preloader')?.classList.add('fade-out'), 500);
             loadPublicData();
         });
+
+        // ===== MENU MOBILE =====
+const hamburger = document.getElementById('hamburger');
+const navMenu = document.getElementById('navMenu');
+const menuOverlay = document.getElementById('menuOverlay');
+
+function closeMenu() {
+    hamburger?.classList.remove('active');
+    navMenu?.classList.remove('active');
+    menuOverlay?.classList.remove('active');
+    document.body.classList.remove('menu-open');
+}
+
+function openMenu() {
+    hamburger?.classList.add('active');
+    navMenu?.classList.add('active');
+    menuOverlay?.classList.add('active');
+    document.body.classList.add('menu-open');
+}
+
+function toggleMenu() {
+    if (navMenu?.classList.contains('active')) {
+        closeMenu();
+    } else {
+        openMenu();
+    }
+}
+
+if (hamburger) {
+    hamburger.addEventListener('click', toggleMenu);
+}
+
+if (menuOverlay) {
+    menuOverlay.addEventListener('click', closeMenu);
+}
+
+window.addEventListener('resize', function() {
+    if (window.innerWidth > 768 && navMenu?.classList.contains('active')) {
+        closeMenu();
+    }
+});
+
+// ===== SMOOTH SCROLL + FECHAR MENU MOBILE =====
+document.querySelectorAll('.nav-menu a, a[href^="#"]').forEach(anchor => {
+    // Remove listeners antigos para evitar duplicação
+    const newAnchor = anchor.cloneNode(true);
+    anchor.parentNode.replaceChild(newAnchor, anchor);
+    
+    newAnchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        
+        // Pular se for vazio ou apenas "#"
+        if (!href || href === '#') return;
+        
+        // Verificar se é um link para uma seção da página
+        if (href.startsWith('#')) {
+            e.preventDefault();
+            const target = document.querySelector(href);
+            if (target) {
+                // Fecha o menu mobile primeiro
+                closeMenu();
+                
+                // Pequeno delay para o menu fechar antes de rolar
+                setTimeout(() => {
+                    window.scrollTo({ 
+                        top: target.offsetTop - 80, 
+                        behavior: 'smooth' 
+                    });
+                }, 100);
+            }
+        }
+    });
+});
     </script>
 </body>
 </html>
