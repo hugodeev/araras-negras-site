@@ -2564,12 +2564,31 @@ async function loadPublicData() {
         }
         
         // ===== SERVIÇOS =====
-        function renderServices() {
-            const container = document.getElementById('servicesGrid');
-            const services = siteData.servicos || [];
-            if (!services.length) { container.innerHTML = '<p style="text-align:center;padding:40px;">Nenhum serviço cadastrado.</p>'; return; }
-            container.innerHTML = services.map(s => `<div class="service-card"><i class="fas ${s.icon || 'fa-shield-alt'}"></i><h3>${escapeHtml(s.title)}</h3><p>${escapeHtml(s.description)}</p><a href="#contato" class="btn-small">Solicitar orçamento</a></div>`).join('');
-        }
+function renderServices() {
+    const container = document.getElementById('servicesGrid');
+    if (!container) {
+        console.error('Elemento servicesGrid não encontrado!');
+        return;
+    }
+    
+    const services = siteData.servicos || [];
+    
+    if (!services.length) {
+        container.innerHTML = '<p style="text-align:center;padding:40px;">Nenhum serviço cadastrado.</p>';
+        return;
+    }
+    
+    container.innerHTML = services.map(s => `
+        <div class="service-card">
+            <i class="fas ${s.icone}"></i>
+            <h3>${escapeHtml(s.titulo)}</h3>
+            <p>${escapeHtml(s.descricao)}</p>
+            <a href="#contato" class="btn-small">Solicitar orçamento</a>
+        </div>
+    `).join('');
+    
+    console.log('✅ Serviços renderizados com sucesso!');
+}
         
         // ===== NOTÍCIAS =====
         function renderNews() {
