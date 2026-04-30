@@ -7,6 +7,7 @@
     <meta name="theme-color" content="#dc2626">
     <title>Araras Negras | Sistema de Gerenciamento Profissional</title>
     
+    <link rel="shortcut icon" href="LogoArarasNegras.png" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
@@ -1570,6 +1571,7 @@
                             <p>Visão geral do sistema e estatísticas</p>
                             <div class="card-stats"><span><i class="fas fa-images"></i> <span id="statSlides">0</span> slides</span></div>
                         </div>
+                        
                         <div class="admin-card" data-panel="institucional">
                             <div class="card-icon"><i class="fas fa-building"></i></div>
                             <h3>Institucional</h3>
@@ -3130,6 +3132,39 @@
                 }
             });
         })();
+
+        // CORREÇÃO: Faz o card Dashboard abrir o painel de slides
+document.querySelectorAll('.admin-card').forEach(card => {
+    card.removeEventListener('click', null); // Remove listeners antigos
+    card.addEventListener('click', () => {
+        const panel = card.dataset.panel;
+        const panelNames = {
+            home: 'Gerenciar Slides',
+            institucional: 'Institucional',
+            noticias: 'Notícias',
+            galeria: 'Galeria',
+            servicos: 'Serviços',
+            depoimentos: 'Depoimentos',
+            configuracoes: 'Configurações'
+        };
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        const navLink = document.querySelector(`.nav-link[data-panel="${panel}"]`);
+        if (navLink) navLink.classList.add('active');
+        
+        // Todos os cards, inclusive o home, agora abrem seus respectivos painéis
+        if (panel === 'home') {
+            const cardsView = document.getElementById('cardsView');
+            if (cardsView) cardsView.style.display = 'none';
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            const homePanel = document.getElementById('homePanel');
+            if (homePanel) homePanel.classList.add('active');
+            document.getElementById('pageTitle').textContent = 'Gerenciar Slides';
+        } else {
+            showPanel(panel + 'Panel', panelNames[panel]);
+        }
+    });
+});
+
     </script>
 </body>
 </html>

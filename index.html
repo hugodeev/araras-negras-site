@@ -294,17 +294,33 @@
         }
 
         /* Header escuro quando em seções escuras */
-        .header.dark-bg {
-            background: rgba(15, 23, 42, 0.95);
-        }
-        .header.dark-bg .nav-menu a,
-        .header.dark-bg .logo-main,
-        .header.dark-bg .logo-sub {
-            color: white;
-        }
-        .header.dark-bg .hamburger span {
-            background: white;
-        }
+.header.dark-bg {
+    background: rgba(15, 23, 42, 0.95);
+}
+
+.header.dark-bg .nav-menu a,
+.header.dark-bg .logo-main,
+.header.dark-bg .logo-sub {
+    color: white;
+}
+
+.header.dark-bg .hamburger span {
+    background: white;
+}
+
+/* Para garantir que os links do menu fiquem brancos no desktop */
+.header.dark-bg .nav-menu ul li a {
+    color: white !important;
+}
+
+.header.dark-bg .nav-menu ul li a::after {
+    background: var(--primary);
+}
+
+.header.dark-bg .nav-menu ul li a:hover,
+.header.dark-bg .nav-menu ul li a.active {
+    color: var(--primary-light) !important;
+}
 
         .header-container {
             display: flex;
@@ -1828,6 +1844,111 @@ body.menu-open {
     position: fixed;
     width: 100%;
 }
+
+/* ===== HEADER DO MENU MOBILE ===== */
+.menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 30px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.menu-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.menu-logo i {
+    font-size: 2rem;
+    color: var(--primary);
+}
+
+.menu-logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-logo-main {
+    font-size: 1rem;
+    font-weight: 800;
+    color: white;
+    letter-spacing: -0.5px;
+}
+
+.menu-logo-sub {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+}
+
+.menu-close-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    color: white;
+    font-size: 1.125rem;
+}
+
+.menu-close-btn:hover {
+    background: var(--primary);
+    transform: rotate(90deg);
+}
+
+/* Ajuste no padding do menu mobile para acomodar o header */
+@media (max-width: 768px) {
+    .nav-menu {
+        padding: 25px 24px 20px !important;
+    }
+}
+
+/* ===== CORREÇÃO PARA TELAS MAIORES QUE 768px ===== */
+@media (min-width: 769px) {
+    .nav-menu {
+        display: block !important;
+        position: static !important;
+        background: transparent !important;
+        padding: 0 !important;
+        width: auto !important;
+        height: auto !important;
+        left: auto !important;
+        box-shadow: none !important;
+    }
+    
+    .nav-menu .menu-header {
+        display: none !important;
+    }
+    
+    .nav-menu ul {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 32px !important;
+    }
+    
+    .nav-menu a {
+        color: var(--gray-700) !important;
+        font-size: 0.9375rem !important;
+        padding: 0 !important;
+    }
+    
+    .hamburger {
+        display: none !important;
+    }
+    
+    .menu-overlay {
+        display: none !important;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -1853,16 +1974,26 @@ body.menu-open {
             </div>
         </a>
         
-        <nav class="nav-menu" id="navMenu">
-            <ul>
-                <li><a href="#home" class="active">Início</a></li>
-                <li><a href="#institucional">Institucional</a></li>
-                <li><a href="#servicos">Serviços</a></li>
-                <li><a href="#noticias">Notícias</a></li>
-                <li><a href="#galeria">Galeria</a></li>
-                <li><a href="#contato">Contato</a></li>
-            </ul>
-        </nav>
+     <nav class="nav-menu" id="navMenu">
+
+    <div class="menu-header">
+        <div class="menu-logo">
+            <i class="fas fa-fire-extinguisher"></i>
+            <div class="menu-logo-text">
+                <span class="menu-logo-main">Araras Negras</span>
+                <span class="menu-logo-sub">Bombeiros Civis de Araruna</span>
+            </div>
+        </div>
+    </div>
+    <ul>
+        <li><a href="#home" class="active">Início</a></li>
+        <li><a href="#institucional">Institucional</a></li>
+        <li><a href="#servicos">Serviços</a></li>
+        <li><a href="#noticias">Notícias</a></li>
+        <li><a href="#galeria">Galeria</a></li>
+        <li><a href="#contato">Contato</a></li>
+    </ul>
+</nav>
 
         <button class="hamburger" id="hamburger" aria-label="Menu">
             <span></span>
@@ -1880,7 +2011,9 @@ body.menu-open {
         <section id="home" class="hero">
             <div class="hero-slider" id="heroSlider">
                 <div class="slide active">
-                    <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1582139329536-e7284fece509?w=1920')"></div>
+                    
+                    <div class="slide-bg" style="background-image: url('src/img/IMG-20250909-WA0066.jpg')"></div>
+
                     <div class="container hero-content">
                         <span class="hero-tagline">Bem-vindo à</span>
                         <h1 class="hero-title">Araras Negras</h1>
@@ -2659,6 +2792,90 @@ document.querySelectorAll('.nav-menu a, a[href^="#"]').forEach(anchor => {
         }
     });
 });
+
+// ===== ATIVAR LINK DO MENU CONFORME SEÇÃO VISÍVEL =====
+function updateActiveMenu() {
+    // Lista de seções do site
+    const sections = [
+        { id: 'home', menuId: 'home' },
+        { id: 'institucional', menuId: 'institucional' },
+        { id: 'servicos', menuId: 'servicos' },
+        { id: 'noticias', menuId: 'noticias' },
+        { id: 'galeria', menuId: 'galeria' },
+        { id: 'contato', menuId: 'contato' }
+    ];
+    
+    let currentSection = '';
+    const scrollPosition = window.scrollY + 100; // Offset para o header fixo
+    
+    for (const section of sections) {
+        const element = document.getElementById(section.id);
+        if (element) {
+            const offsetTop = element.offsetTop;
+            const offsetBottom = offsetTop + element.offsetHeight;
+            
+            if (scrollPosition >= offsetTop && scrollPosition < offsetBottom) {
+                currentSection = section.id;
+                break;
+            }
+        }
+    }
+    
+    // Se estiver no topo da página, ativa "Início"
+    if (window.scrollY < 100) {
+        currentSection = 'home';
+    }
+    
+    // Atualiza a classe active nos links do menu desktop
+    document.querySelectorAll('.nav-menu a').forEach(link => {
+        const href = link.getAttribute('href');
+        if (href === `#${currentSection}`) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+}
+
+// ===== OBSERVADOR DE SEÇÕES MAIS PRECISO =====
+// Usando Intersection Observer para maior precisão
+const sectionObserver = new IntersectionObserver((entries) => {
+    let visibleSection = '';
+    
+    // Encontra a seção mais visível
+    for (const entry of entries) {
+        if (entry.isIntersecting) {
+            visibleSection = entry.target.id;
+            break;
+        }
+    }
+    
+    if (visibleSection) {
+        // Atualiza os links do menu
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            const href = link.getAttribute('href');
+            if (href === `#${visibleSection}`) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    }
+}, { threshold: 0.3 }); // Quando 30% da seção estiver visível
+
+// Observa todas as seções
+const sectionsToObserve = ['home', 'institucional', 'servicos', 'noticias', 'galeria', 'contato'];
+sectionsToObserve.forEach(sectionId => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        sectionObserver.observe(section);
+    }
+});
+
+// Também mantém o evento de scroll como fallback
+window.addEventListener('scroll', updateActiveMenu);
+// Executa uma vez ao carregar
+updateActiveMenu();
     </script>
 </body>
 </html>
