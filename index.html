@@ -2612,22 +2612,31 @@ async function loadPublicData() {
             testimonialsInterval = setInterval(() => showTestimonial(currentTestimonial + 1), 8000);
         }
         
-        // ===== CONTATOS =====
-        function renderContacts() {
-            const cfg = siteData.config || {};
-            const phone = cfg.emergencyPhone || '(83) 99999-9999';
-            const email = cfg.contactEmail || 'contato@ararasnegras.com.br';
-            const address = cfg.contactAddress || 'Rua Principal, 123 - Centro, Araruna - PB';
-            
-            document.getElementById('emergencyPhoneLink').href = `tel:${phone}`;
-            document.getElementById('contactPhone').href = `tel:${phone}`;
-            document.getElementById('contactPhone').textContent = phone;
-            document.getElementById('footerEmergencyPhone').href = `tel:${phone}`;
-            document.getElementById('footerEmergencyPhone').textContent = phone;
-            document.getElementById('contactEmailLink').href = `mailto:${email}`;
-            document.getElementById('contactEmailLink').textContent = email;
-            document.getElementById('contactAddress').textContent = address;
-        }
+function renderContacts() {
+    const cfg = siteData.config || {};
+    const phone = cfg.emergencyPhone || '(83) 99999-9999';
+    const email = cfg.contactEmail || 'contato@ararasnegras.com.br';
+    const address = cfg.contactAddress || 'Rua Principal, 123 - Centro, Araruna - PB';
+    
+    // Verifica se o elemento existe antes de modificar
+    const emergencyLink = document.getElementById('emergencyPhoneLink');
+    if (emergencyLink) emergencyLink.href = `tel:${phone}`;
+    
+    const contactPhone = document.getElementById('contactPhone');
+    if (contactPhone) contactPhone.href = `tel:${phone}`;
+    if (contactPhone) contactPhone.textContent = phone;
+    
+    const footerPhone = document.getElementById('footerEmergencyPhone');
+    if (footerPhone) footerPhone.href = `tel:${phone}`;
+    if (footerPhone) footerPhone.textContent = phone;
+    
+    const contactEmail = document.getElementById('contactEmailLink');
+    if (contactEmail) contactEmail.href = `mailto:${email}`;
+    if (contactEmail) contactEmail.textContent = email;
+    
+    const contactAddr = document.getElementById('contactAddress');
+    if (contactAddr) contactAddr.textContent = address;
+}
         
         // ===== FILTROS =====
         function filterNews(filter) { currentNewsFilter = filter; renderNews(); document.querySelectorAll('.filter-btn').forEach(btn => { btn.classList.toggle('active', btn.dataset.filter === filter); }); }
