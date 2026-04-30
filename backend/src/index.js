@@ -21,12 +21,102 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false }
 });
 
-// Testar conexão
-pool.connect((err, client, release) => {
+
+// FUNÇÃO PARA CRIAR TABELAS AUTOMATICAMENTE
+async function criarTabelas() {
+    const queries = [
+        `CREATE TABLE IF NOT EXISTS servicos (
+            id SERIAL PRIMARY KEY,
+            icone VARCHAR(50) NOT NULL,
+            titulo VARCHAR(255) NOT NULL,
+            descricao TEXT NOT NULL,
+            criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )`,
+        
+        `INSERT INTO servicos (icone, titulo, descricao)
+        SELECT * FROM (VALUES
+            ('fa-fire', 'Combate a Incêndios', 'Atuação rápida e eficiente no combate a princípios de incêndio.'),
+            ('fa-heartbeat', 'Primeiros Socorros', 'Atendimento pré-hospitalar qualificado.'),
+            ('fa-mountain', 'Resgate em Altura', 'Operações de resgate em locais de difícil acesso.'),
+            ('fa-chalkboard-teacher', 'Treinamentos', 'Capacitação para empresas e comunidade.')
+        ) AS v(icone, titulo, descricao)
+        WHERE NOT EXISTS (SELECT 1 FROM servicos LIMIT 1)`,
+        
+        `CREATE TABLE IF NOT EXISTS depoimentos (
+            id SERIAL PRIMARY KEY,
+            nome VARCHAR(100) NOT NULL,
+            funcao VARCHAR(100) NOT NULL,
+            texto TEXT NOT NULL,
+            imagem TEXT,
+            criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )`,
+        
+        `CREATE TABLE IF NOT EXISTS noticias (
+            id SERIAL PRIMARY KEY,
+            titulo VARCHAR(255) NOT NULL,
+            descricao TEXT NOT NULL,
+            categoria VARCHAR(50) NOT NULL,
+            imagem TEXT,
+            data_publicacao VARCHAR(20),
+            autor VARCHAR(100) DEFAULT 'Equipe Araras Negras',
+            criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )`,
+        
+        `CREATE TABLE IF NOT EXISTS slides (
+            id SERIAL PRIMARY KEY,
+            tagline VARCHAR(100) DEFAULT 'Bem-vindo à',
+            titulo VARCHAR(255) NOT NULL,
+            subtitulo VARCHAR(255),
+            imagem TEXT NOT NULL,
+            botao_texto VARCHAR(50) DEFAULT 'Conheça-nos',
+            botao_link VARCHAR(100) DEFAULT '#institucional',
+            criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )`,
+        
+        `CREATE TABLE IF NOT EXISTS galeria (
+            id SERIAL PRIMARY KEY,
+            titulo VARCHAR(255) NOT NULL,
+            descricao VARCHAR(255),
+            categoria VARCHAR(50) NOT NULL,
+            src TEXT NOT NULL,
+            criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )`,
+        
+        `CREATE TABLE IF NOT EXISTS usuarios (
+            id SERIAL PRIMARY KEY,
+            nome VARCHAR(100) NOT NULL,
+            email VARCHAR(100) UNIQUE NOT NULL,
+            senha_hash VARCHAR(255) NOT NULL,
+            avatar TEXT,
+            criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )`,
+        
+        `CREATE TABLE IF NOT EXISTS configuracoes (
+            id INTEGER PRIMARY KEY DEFAULT 1,
+            telefone_emergencia VARCHAR(20) DEFAULT '(83) 99999-9999',
+            email_contato VARCHAR(100) DEFAULT 'contato@ararasnegras.com.br',
+            endereco TEXT DEFAULT 'Rua Principal, 123 - Centro, Araruna - PB',
+            whatsapp VARCHAR(20) DEFAULT '5583999999999'
+        )`
+    ];
+    
+    for (const query of queries) {
+        try {
+            await pool.query(query);
+            console.log('✅ Query executada com sucesso');
+        } catch (err) {
+            console.log('⚠️ Query ignorada (já existe):', err.message);
+        }
+    }
+}
+
+// Testar conexão e criar tabelas
+pool.connect(async (err, client, release) => {
     if (err) {
         console.error('❌ Erro ao conectar ao PostgreSQL:', err.message);
     } else {
         console.log('✅ Conectado ao PostgreSQL com sucesso!');
+        await criarTabelas();
         release();
     }
 });
