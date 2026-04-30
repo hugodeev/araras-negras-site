@@ -1665,25 +1665,50 @@
             .stats-grid { gap: 20px; }
         }
 
-        @media (max-width: 768px) {
-            .nav-menu {
-                display: none !important;
-            }
-
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .about-grid { grid-template-columns: 1fr; }
-            .cards-container { grid-template-columns: 1fr; }
-            .contact-info-cards { grid-template-columns: 1fr; }
-            .contact-main { grid-template-columns: 1fr; }
-            .footer-grid { grid-template-columns: 1fr; gap: 32px; }
-            .newsletter-form { flex-direction: column; }
-            .slider-arrow { display: none; }
-            .testimonials-slider { padding: 0 30px; }
-            
-            .footer-links li, .footer-hours li {
-                margin-bottom: 16px;
-            }
-        }
+       @media (max-width: 768px) {
+    /* ESCONDE O MENU COMPLETAMENTE NO MOBILE */
+    .nav-menu {
+        display: none !important;
+    }
+    
+    /* GARANTE QUE O HEADER NÃO QUEBRE */
+    .header-container {
+        justify-content: space-between;
+        flex-wrap: nowrap;
+    }
+    
+    /* AJUSTA O LOGO PARA NÃO QUEBRAR */
+    .logo {
+        flex-shrink: 0;
+    }
+    
+    .logo-text {
+        display: flex;
+    }
+    
+    .logo-main {
+        font-size: 0.95rem;
+    }
+    
+    .logo-sub {
+        font-size: 0.6rem;
+    }
+    
+    /* RESTO DO SEU CSS RESPONSIVO */
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .about-grid { grid-template-columns: 1fr; }
+    .cards-container { grid-template-columns: 1fr; }
+    .contact-info-cards { grid-template-columns: 1fr; }
+    .contact-main { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+    .newsletter-form { flex-direction: column; }
+    .slider-arrow { display: none; }
+    .testimonials-slider { padding: 0 30px; }
+    
+    .footer-links li, .footer-hours li {
+        margin-bottom: 16px;
+    }
+}
 
         @media (max-width: 576px) {
             .stats-grid { grid-template-columns: 1fr; }
@@ -1706,27 +1731,27 @@
     
 
     <!-- HEADER -->
-    <header class="header" id="header">
-        <div class="container header-container">
-            <a href="#home" class="logo">
-                <i class="fas fa-fire-extinguisher"></i>
-                <div class="logo-text">
-                    <span class="logo-main">Araras Negras</span>
-                    <span class="logo-sub">Bombeiros Civis de Araruna</span>
-                </div>
-            </a>
-            <nav class="nav-menu" id="navMenu">
-                <ul>
-                    <li><a href="#home" class="active">Início</a></li>
-                    <li><a href="#institucional">Institucional</a></li>
-                    <li><a href="#servicos">Serviços</a></li>
-                    <li><a href="#noticias">Notícias</a></li>
-                    <li><a href="#galeria">Galeria</a></li>
-                    <li><a href="#contato">Contato</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+<header class="header" id="header">
+    <div class="container header-container">
+        <a href="#home" class="logo">
+            <i class="fas fa-fire-extinguisher"></i>
+            <div class="logo-text">
+                <span class="logo-main">Araras Negras</span>
+                <span class="logo-sub">Bombeiros Civis de Araruna</span>
+            </div>
+        </a>
+        <nav class="nav-menu" id="navMenu">
+            <ul>
+                <li><a href="#home" class="active">Início</a></li>
+                <li><a href="#institucional">Institucional</a></li>
+                <li><a href="#servicos">Serviços</a></li>
+                <li><a href="#noticias">Notícias</a></li>
+                <li><a href="#galeria">Galeria</a></li>
+                <li><a href="#contato">Contato</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
 
     <main>
         <!-- HERO SLIDER -->
