@@ -14,8 +14,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* ===== TODO O CSS DO SISTEMA NOVO AQUI ===== */
-        /* Mantenha exatamente o mesmo CSS que você tem no sistema novo */
         * {
             margin: 0;
             padding: 0;
@@ -83,6 +81,17 @@
 
         ::-webkit-scrollbar-thumb:hover {
             background: var(--primary-dark);
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
         }
 
         .app {
@@ -1186,6 +1195,7 @@
             text-decoration: none;
             font-size: 0.8rem;
             transition: var(--transition);
+            cursor: pointer;
         }
 
         .login-links a:hover {
@@ -1372,7 +1382,7 @@
                 <p>Sistema de Gerenciamento de Conteúdo</p>
             </div>
             
-            <form id="loginForm">
+            <form id="loginForm" onsubmit="return false;">
                 <div class="input-group">
                     <label>E-mail</label>
                     <div class="input-wrapper">
@@ -1398,12 +1408,12 @@
                     <i class="fas fa-arrow-right"></i>
                 </button>
                 <div class="login-links">
-                    <a href="#" id="showRegister">Criar conta</a>
-                    <a href="#" id="forgotPasswordLink">Esqueceu a senha?</a>
+                    <a href="javascript:void(0)" id="showRegister">Criar conta</a>
+                    <a href="javascript:void(0)" id="forgotPasswordLink">Esqueceu a senha?</a>
                 </div>
             </form>
             
-            <form id="registerForm" style="display: none;">
+            <form id="registerForm" style="display: none;" onsubmit="return false;">
                 <div class="input-group">
                     <label>Nome completo</label>
                     <div class="input-wrapper">
@@ -1461,7 +1471,7 @@
                     <i class="fas fa-user-plus"></i>
                 </button>
                 <div class="login-links">
-                    <a href="#" id="backToLogin">Voltar para o login</a>
+                    <a href="javascript:void(0)" id="backToLogin">Voltar para o login</a>
                 </div>
             </form>
         </div>
@@ -1612,7 +1622,7 @@
                 </div>
 
                 <div class="panel" id="homePanel">
-                    <button class="back-btn" onclick="window.showCardsView()"><i class="fas fa-arrow-left"></i> Voltar ao Dashboard</button>
+                    <button class="back-btn"><i class="fas fa-arrow-left"></i> Voltar ao Dashboard</button>
                     <div class="form-card">
                         <h3><i class="fas fa-sliders-h"></i> Gerenciar Slides do Hero</h3>
                         <div id="sliderList"></div>
@@ -1621,10 +1631,10 @@
                 </div>
                 
                 <div class="panel" id="institucionalPanel">
-                    <button class="back-btn" onclick="window.showCardsView()"><i class="fas fa-arrow-left"></i> Voltar ao Dashboard</button>
+                    <button class="back-btn"><i class="fas fa-arrow-left"></i> Voltar ao Dashboard</button>
                     <div class="form-card">
                         <h3><i class="fas fa-building"></i> Editar Conteúdo Institucional</h3>
-                        <form id="institutionalForm">
+                        <form id="institutionalForm" onsubmit="return false;">
                             <div class="form-group"><label>Título Principal</label><input type="text" id="instTitle" placeholder="Título da seção"></div>
                             <div class="form-group"><label>Subtítulo / Destaque</label><input type="text" id="instHighlight" placeholder="Texto em destaque"></div>
                             <div class="form-group"><label>Texto Principal</label><textarea id="instText" rows="6" placeholder="Descrição completa da equipe"></textarea></div>
@@ -1646,10 +1656,10 @@
                 </div>
                 
                 <div class="panel" id="noticiasPanel">
-                    <button class="back-btn" onclick="window.showCardsView()"><i class="fas fa-arrow-left"></i> Voltar ao Dashboard</button>
+                    <button class="back-btn"><i class="fas fa-arrow-left"></i> Voltar ao Dashboard</button>
                     <div class="form-card">
                         <h3><i class="fas fa-plus-circle"></i> Adicionar Notícia</h3>
-                        <form id="addNewsForm">
+                        <form id="addNewsForm" onsubmit="return false;">
                             <div class="form-group"><label>Título <span class="required">*</span></label><input type="text" id="newsTitle" required></div>
                             <div class="form-group"><label>Descrição <span class="required">*</span></label><textarea id="newsDescription" rows="4" required></textarea></div>
                             <div class="form-row">
@@ -1677,10 +1687,10 @@
                 </div>
                 
                 <div class="panel" id="galeriaPanel">
-                    <button class="back-btn" onclick="window.showCardsView()"><i class="fas fa-arrow-left"></i> Voltar ao Dashboard</button>
+                    <button class="back-btn"><i class="fas fa-arrow-left"></i> Voltar ao Dashboard</button>
                     <div class="form-card">
                         <h3><i class="fas fa-plus-circle"></i> Adicionar Foto</h3>
-                        <form id="addGalleryForm">
+                        <form id="addGalleryForm" onsubmit="return false;">
                             <div class="form-row">
                                 <div class="form-group"><label>Categoria</label><select id="galleryCategory"><option value="treinamento">Treinamento</option><option value="operacao">Operação</option><option value="equipe">Equipe</option></select></div>
                                 <div class="form-group"><label>Título <span class="required">*</span></label><input type="text" id="galleryTitle" required></div>
@@ -1702,7 +1712,7 @@
                 </div>
                 
                 <div class="panel" id="servicosPanel">
-                    <button class="back-btn" onclick="window.showCardsView()"><i class="fas fa-arrow-left"></i> Voltar ao Dashboard</button>
+                    <button class="back-btn"><i class="fas fa-arrow-left"></i> Voltar ao Dashboard</button>
                     <div class="form-card">
                         <h3><i class="fas fa-tools"></i> Gerenciar Serviços</h3>
                         <div id="servicesList"></div>
@@ -1711,10 +1721,10 @@
                 </div>
                 
                 <div class="panel" id="depoimentosPanel">
-                    <button class="back-btn" onclick="window.showCardsView()"><i class="fas fa-arrow-left"></i> Voltar ao Dashboard</button>
+                    <button class="back-btn"><i class="fas fa-arrow-left"></i> Voltar ao Dashboard</button>
                     <div class="form-card">
                         <h3><i class="fas fa-plus-circle"></i> Adicionar Depoimento</h3>
-                        <form id="addTestimonialForm">
+                        <form id="addTestimonialForm" onsubmit="return false;">
                             <div class="form-row">
                                 <div class="form-group"><label>Nome <span class="required">*</span></label><input type="text" id="testimonialName" required></div>
                                 <div class="form-group"><label>Função <span class="required">*</span></label><input type="text" id="testimonialRole" required></div>
@@ -1732,7 +1742,7 @@
                     <div class="form-card">
                         <h3><i class="fas fa-list"></i> Depoimentos</h3>
                         <div class="data-table">
-                            <tr>
+                            <table>
                                 <thead><tr><th>Nome</th><th>Depoimento</th><th>Ações</th></tr></thead>
                                 <tbody id="testimonialsList"></tbody>
                             </table>
@@ -1741,7 +1751,7 @@
                 </div>
                 
                 <div class="panel" id="configuracoesPanel">
-                    <button class="back-btn" onclick="window.showCardsView()"><i class="fas fa-arrow-left"></i> Voltar ao Dashboard</button>
+                    <button class="back-btn"><i class="fas fa-arrow-left"></i> Voltar ao Dashboard</button>
                     
                     <div class="form-card">
                         <h3><i class="fas fa-user-circle"></i> Minha Conta</h3>
@@ -1788,7 +1798,7 @@
                     
                     <div class="form-card">
                         <h3><i class="fas fa-sliders-h"></i> Configurações Gerais</h3>
-                        <form id="settingsForm">
+                        <form id="settingsForm" onsubmit="return false;">
                             <div class="form-group"><label>Telefone de Emergência</label><input type="text" id="emergencyPhone" placeholder="(00) 00000-0000"></div>
                             <div class="form-group"><label>E-mail de Contato</label><input type="email" id="contactEmail" placeholder="contato@exemplo.com"></div>
                             <div class="form-group"><label>Endereço</label><input type="text" id="contactAddress" placeholder="Endereço completo"></div>
@@ -1812,14 +1822,15 @@
         </main>
     </div>
 
-    <div id="serviceModal" class="modal-overlay"><div class="modal-container"><h3><i class="fas fa-edit"></i> Editar Serviço</h3><form id="editServiceForm"><div class="form-group"><label>Ícone (fa-nome)</label><input type="text" id="editServiceIcon" required placeholder="ex: fa-fire"></div><div class="form-group"><label>Título</label><input type="text" id="editServiceTitle" required></div><div class="form-group"><label>Descrição</label><textarea id="editServiceDescription" rows="4" required></textarea></div><div class="modal-buttons"><button type="button" class="btn-secondary" id="closeServiceModal">Cancelar</button><button type="submit" class="btn-primary">Salvar</button></div></form></div></div>
-    <div id="addServiceModal" class="modal-overlay"><div class="modal-container"><h3><i class="fas fa-plus-circle"></i> Adicionar Serviço</h3><form id="addServiceFormModal"><div class="form-group"><label>Ícone (fa-nome)</label><input type="text" id="addServiceIcon" required placeholder="ex: fa-fire"></div><div class="form-group"><label>Título</label><input type="text" id="addServiceTitle" required></div><div class="form-group"><label>Descrição</label><textarea id="addServiceDescription" rows="4" required></textarea></div><div class="modal-buttons"><button type="button" class="btn-secondary" id="closeAddServiceModal">Cancelar</button><button type="submit" class="btn-primary">Adicionar</button></div></form></div></div>
-    <div id="addSlideModal" class="modal-overlay"><div class="modal-container"><h3><i class="fas fa-plus-circle"></i> Adicionar Slide</h3><form id="addSlideFormModal"><div class="form-group"><label>Imagem <span class="required">*</span></label><div class="file-input-label" onclick="document.getElementById('addSlideImageFile').click()"><i class="fas fa-upload"></i> Selecionar Imagem</div><input type="file" id="addSlideImageFile" accept="image/*" style="display:none"><img id="addSlideImagePreview" class="image-preview"></div><div class="form-group"><label>Tagline</label><input type="text" id="addSlideTagline" required placeholder="Ex: Bem-vindo à"></div><div class="form-group"><label>Título</label><input type="text" id="addSlideTitle" required placeholder="Ex: Araras Negras"></div><div class="form-group"><label>Subtítulo</label><input type="text" id="addSlideSubtitle" required placeholder="Ex: Protegendo vidas"></div><div class="modal-buttons"><button type="button" class="btn-secondary" id="closeAddSlideModal">Cancelar</button><button type="submit" class="btn-primary">Adicionar</button></div></form></div></div>
-    <div id="editSlideModal" class="modal-overlay"><div class="modal-container"><h3><i class="fas fa-edit"></i> Editar Slide</h3><form id="editSlideForm"><div class="form-group"><label>Imagem</label><div class="file-input-label" onclick="document.getElementById('editSlideImageFile').click()"><i class="fas fa-upload"></i> Alterar Imagem</div><input type="file" id="editSlideImageFile" accept="image/*" style="display:none"><img id="editSlideImagePreview" class="image-preview"></div><div class="form-group"><label>Tagline</label><input type="text" id="editSlideTagline" required></div><div class="form-group"><label>Título</label><input type="text" id="editSlideTitle" required></div><div class="form-group"><label>Subtítulo</label><input type="text" id="editSlideSubtitle" required></div><div class="modal-buttons"><button type="button" class="btn-secondary" id="closeEditSlideModal">Cancelar</button><button type="submit" class="btn-primary">Salvar</button></div></form></div></div>
-    <div id="editTestimonialModal" class="modal-overlay"><div class="modal-container"><h3><i class="fas fa-edit"></i> Editar Depoimento</h3><form id="editTestimonialFormModal"><div class="form-group"><label>Nome</label><input type="text" id="editTestimonialName" required></div><div class="form-group"><label>Função</label><input type="text" id="editTestimonialRole" required></div><div class="form-group"><label>Depoimento</label><textarea id="editTestimonialText" rows="4" required></textarea></div><div class="modal-buttons"><button type="button" class="btn-secondary" id="closeEditTestimonialModal">Cancelar</button><button type="submit" class="btn-primary">Salvar</button></div></form></div></div>
+    <div id="serviceModal" class="modal-overlay"><div class="modal-container"><h3><i class="fas fa-edit"></i> Editar Serviço</h3><form id="editServiceForm" onsubmit="return false;"><div class="form-group"><label>Ícone (fa-nome)</label><input type="text" id="editServiceIcon" required placeholder="ex: fa-fire"></div><div class="form-group"><label>Título</label><input type="text" id="editServiceTitle" required></div><div class="form-group"><label>Descrição</label><textarea id="editServiceDescription" rows="4" required></textarea></div><div class="modal-buttons"><button type="button" class="btn-secondary" id="closeServiceModal">Cancelar</button><button type="submit" class="btn-primary">Salvar</button></div></form></div></div>
+    <div id="addServiceModal" class="modal-overlay"><div class="modal-container"><h3><i class="fas fa-plus-circle"></i> Adicionar Serviço</h3><form id="addServiceFormModal" onsubmit="return false;"><div class="form-group"><label>Ícone (fa-nome)</label><input type="text" id="addServiceIcon" required placeholder="ex: fa-fire"></div><div class="form-group"><label>Título</label><input type="text" id="addServiceTitle" required></div><div class="form-group"><label>Descrição</label><textarea id="addServiceDescription" rows="4" required></textarea></div><div class="modal-buttons"><button type="button" class="btn-secondary" id="closeAddServiceModal">Cancelar</button><button type="submit" class="btn-primary">Adicionar</button></div></form></div></div>
+    <div id="addSlideModal" class="modal-overlay"><div class="modal-container"><h3><i class="fas fa-plus-circle"></i> Adicionar Slide</h3><form id="addSlideFormModal" onsubmit="return false;"><div class="form-group"><label>Imagem <span class="required">*</span></label><div class="file-input-label" onclick="document.getElementById('addSlideImageFile').click()"><i class="fas fa-upload"></i> Selecionar Imagem</div><input type="file" id="addSlideImageFile" accept="image/*" style="display:none"><img id="addSlideImagePreview" class="image-preview"></div><div class="form-group"><label>Tagline</label><input type="text" id="addSlideTagline" required placeholder="Ex: Bem-vindo à"></div><div class="form-group"><label>Título</label><input type="text" id="addSlideTitle" required placeholder="Ex: Araras Negras"></div><div class="form-group"><label>Subtítulo</label><input type="text" id="addSlideSubtitle" required placeholder="Ex: Protegendo vidas"></div><div class="modal-buttons"><button type="button" class="btn-secondary" id="closeAddSlideModal">Cancelar</button><button type="submit" class="btn-primary">Adicionar</button></div></form></div></div>
+    <div id="editSlideModal" class="modal-overlay"><div class="modal-container"><h3><i class="fas fa-edit"></i> Editar Slide</h3><form id="editSlideForm" onsubmit="return false;"><div class="form-group"><label>Imagem</label><div class="file-input-label" onclick="document.getElementById('editSlideImageFile').click()"><i class="fas fa-upload"></i> Alterar Imagem</div><input type="file" id="editSlideImageFile" accept="image/*" style="display:none"><img id="editSlideImagePreview" class="image-preview"></div><div class="form-group"><label>Tagline</label><input type="text" id="editSlideTagline" required></div><div class="form-group"><label>Título</label><input type="text" id="editSlideTitle" required></div><div class="form-group"><label>Subtítulo</label><input type="text" id="editSlideSubtitle" required></div><div class="modal-buttons"><button type="button" class="btn-secondary" id="closeEditSlideModal">Cancelar</button><button type="submit" class="btn-primary">Salvar</button></div></form></div></div>
+    <div id="editTestimonialModal" class="modal-overlay"><div class="modal-container"><h3><i class="fas fa-edit"></i> Editar Depoimento</h3><form id="editTestimonialFormModal" onsubmit="return false;"><div class="form-group"><label>Nome</label><input type="text" id="editTestimonialName" required></div><div class="form-group"><label>Função</label><input type="text" id="editTestimonialRole" required></div><div class="form-group"><label>Depoimento</label><textarea id="editTestimonialText" rows="4" required></textarea></div><div class="modal-buttons"><button type="button" class="btn-secondary" id="closeEditTestimonialModal">Cancelar</button><button type="submit" class="btn-primary">Salvar</button></div></form></div></div>
     <div id="confirmModal" class="confirm-modal"><div class="confirm-modal-content"><h3><i class="fas fa-exclamation-triangle"></i> Confirmar</h3><p id="confirmMessage">Tem certeza que deseja excluir este item?</p><div class="confirm-modal-buttons"><button id="confirmYes" class="btn-danger">Sim, excluir</button><button id="confirmNo" class="btn-secondary">Cancelar</button></div></div></div>
+
 <script>
-  // ===== CONFIGURAÇÃO DA API =====
+// ===== CONFIGURAÇÃO DA API =====
 const API_URL = 'https://araras-negras-api.onrender.com/api';
 let authToken = localStorage.getItem('token');
 let currentUser = null;
@@ -1921,12 +1932,12 @@ function updateUserInterface() {
 async function loadAllData() {
     try {
         const [servicos, depoimentos, noticias, galeria, slides, config] = await Promise.all([
-            fetch(`${API_URL}/servicos`).then(r => r.json()),
-            fetch(`${API_URL}/depoimentos`).then(r => r.json()),
-            fetch(`${API_URL}/noticias`).then(r => r.json()),
-            fetch(`${API_URL}/galeria`).then(r => r.json()),
-            fetch(`${API_URL}/slides`).then(r => r.json()),
-            fetch(`${API_URL}/config`).then(r => r.json())
+            fetch(`${API_URL}/servicos`).then(r => r.json()).catch(() => []),
+            fetch(`${API_URL}/depoimentos`).then(r => r.json()).catch(() => []),
+            fetch(`${API_URL}/noticias`).then(r => r.json()).catch(() => []),
+            fetch(`${API_URL}/galeria`).then(r => r.json()).catch(() => []),
+            fetch(`${API_URL}/slides`).then(r => r.json()).catch(() => []),
+            fetch(`${API_URL}/config`).then(r => r.json()).catch(() => ({}))
         ]);
         siteData.servicos = servicos;
         siteData.depoimentos = depoimentos;
@@ -1983,8 +1994,8 @@ function renderSlides() {
                 <small>${escapeHtml(slide.subtitle || '')}</small>
             </div>
             <div class="actions">
-                <button class="btn-edit" onclick="window.openEditSlideModal(${slide.id})">Editar</button>
-                <button class="btn-delete" onclick="window.deleteSlide(${slide.id})">Excluir</button>
+                <button class="btn-edit" onclick="openEditSlideModal(${slide.id})">Editar</button>
+                <button class="btn-delete" onclick="deleteSlide(${slide.id})">Excluir</button>
             </div>
         </div>
     `).join('');
@@ -2002,8 +2013,8 @@ function renderServices() {
             <h4><i class="fas ${s.icone}"></i> ${escapeHtml(s.titulo)}</h4>
             <p>${escapeHtml(s.descricao)}</p>
             <div class="service-actions">
-                <button class="btn-edit" onclick="window.openEditServiceModal(${s.id})">Editar</button>
-                <button class="btn-delete" onclick="window.deleteService(${s.id})">Excluir</button>
+                <button class="btn-edit" onclick="openEditServiceModal(${s.id})">Editar</button>
+                <button class="btn-delete" onclick="deleteService(${s.id})">Excluir</button>
             </div>
         </div>
     `).join('');
@@ -2022,8 +2033,8 @@ function renderNews() {
             <td><span style="background: var(--primary-light); color: var(--primary-dark); padding: 4px 8px; border-radius: 20px;">${escapeHtml(n.categoria)}</span></td>
             <td>${escapeHtml(n.data_publicacao)}</td>
             <td>
-                <button class="btn-edit" onclick="window.editNews(${n.id})">Editar</button>
-                <button class="btn-delete" onclick="window.deleteNews(${n.id})">Excluir</button>
+                <button class="btn-edit" onclick="editNews(${n.id})">Editar</button>
+                <button class="btn-delete" onclick="deleteNews(${n.id})">Excluir</button>
             </td>
         </tr>
     `).join('');
@@ -2042,7 +2053,7 @@ function renderGallery() {
             <div class="info">
                 <p><strong>${escapeHtml(item.titulo)}</strong></p>
                 <p style="font-size: 0.7rem;">${escapeHtml(item.categoria)}</p>
-                <button class="btn-delete" onclick="window.deleteGalleryItem(${item.id})">Excluir</button>
+                <button class="btn-delete" onclick="deleteGalleryItem(${item.id})">Excluir</button>
             </div>
         </div>
     `).join('');
@@ -2060,14 +2071,17 @@ function renderTestimonials() {
             <td><strong>${escapeHtml(t.nome)}</strong><br><small style="color: var(--gray-500);">${escapeHtml(t.funcao)}</small></td>
             <td>${escapeHtml(t.texto.substring(0, 80))}</td>
             <td>
-                <button class="btn-edit" onclick="window.openEditTestimonialModal(${t.id})">Editar</button>
-                <button class="btn-delete" onclick="window.deleteTestimonial(${t.id})">Excluir</button>
+                <button class="btn-edit" onclick="openEditTestimonialModal(${t.id})">Editar</button>
+                <button class="btn-delete" onclick="deleteTestimonial(${t.id})">Excluir</button>
             </td>
         </tr>
     `).join('');
 }
 
-function loadInstitutional() {}
+function loadInstitutional() {
+    // Implementar com dados da API
+}
+
 function loadSettings() {
     if (siteData.config) {
         document.getElementById('emergencyPhone').value = siteData.config.emergencyPhone || '';
@@ -2077,34 +2091,19 @@ function loadSettings() {
     }
 }
 
-// ===== CRUD =====
-window.addService = async function(servico) {
-    try {
-        const newService = await apiRequest('/servicos', 'POST', servico);
-        siteData.servicos.push(newService);
-        renderServices();
-        updateStats();
-        showToast('Serviço adicionado!');
-    } catch (error) {
-        showToast('Erro ao adicionar serviço!', 'error');
-    }
-};
+// ===== CRUD FUNCTIONS =====
+function addService(servico) {
+    console.log('Adicionar serviço:', servico);
+    showToast('Serviço adicionado! (Demonstração)');
+}
 
-window.deleteService = async function(id) {
+function deleteService(id) {
     if (confirm('Tem certeza que deseja excluir este serviço?')) {
-        try {
-            await apiRequest(`/servicos/${id}`, 'DELETE');
-            siteData.servicos = siteData.servicos.filter(s => s.id !== id);
-            renderServices();
-            updateStats();
-            showToast('Serviço excluído!');
-        } catch (error) {
-            showToast('Erro ao excluir serviço!', 'error');
-        }
+        showToast('Serviço excluído! (Demonstração)');
     }
-};
+}
 
-window.openEditServiceModal = function(id) {
+function openEditServiceModal(id) {
     const service = siteData.servicos.find(s => s.id === id);
     if (service) {
         document.getElementById('editServiceIcon').value = service.icone;
@@ -2113,72 +2112,191 @@ window.openEditServiceModal = function(id) {
         window.editingServiceId = id;
         document.getElementById('serviceModal').classList.add('show');
     }
-};
+}
 
-window.saveServiceEdit = async function() {
-    const updatedService = {
-        icon: document.getElementById('editServiceIcon').value,
-        title: document.getElementById('editServiceTitle').value,
-        description: document.getElementById('editServiceDescription').value
+function saveServiceEdit() {
+    showToast('Serviço atualizado! (Demonstração)');
+    document.getElementById('serviceModal').classList.remove('show');
+}
+
+function openAddServiceModal() {
+    document.getElementById('addServiceIcon').value = '';
+    document.getElementById('addServiceTitle').value = '';
+    document.getElementById('addServiceDescription').value = '';
+    document.getElementById('addServiceModal').classList.add('show');
+}
+
+function addServiceFromModal() {
+    const newService = {
+        icone: document.getElementById('addServiceIcon').value,
+        titulo: document.getElementById('addServiceTitle').value,
+        descricao: document.getElementById('addServiceDescription').value
     };
-    try {
-        await apiRequest(`/servicos/${window.editingServiceId}`, 'PUT', updatedService);
-        await loadAllData();
-        showToast('Serviço atualizado!');
-        document.getElementById('serviceModal').classList.remove('show');
-    } catch (error) {
-        showToast('Erro ao atualizar serviço!', 'error');
+    if (newService.icone && newService.titulo && newService.descricao) {
+        addService(newService);
+        document.getElementById('addServiceModal').classList.remove('show');
+    } else {
+        showToast('Preencha todos os campos!', 'error');
     }
-};
+}
+
+function deleteSlide(id) {
+    if (confirm('Tem certeza que deseja excluir este slide?')) {
+        showToast('Slide excluído! (Demonstração)');
+    }
+}
+
+function openAddSlideModal() {
+    document.getElementById('addSlideModal').classList.add('show');
+}
+
+function openEditSlideModal(id) {
+    const slide = siteData.home.slides.find(s => s.id === id);
+    if (slide) {
+        document.getElementById('editSlideTagline').value = slide.tagline || '';
+        document.getElementById('editSlideTitle').value = slide.title || '';
+        document.getElementById('editSlideSubtitle').value = slide.subtitle || '';
+        window.editingSlideId = id;
+        document.getElementById('editSlideModal').classList.add('show');
+    }
+}
+
+function saveSlideEdit() {
+    showToast('Slide atualizado! (Demonstração)');
+    document.getElementById('editSlideModal').classList.remove('show');
+}
+
+function deleteNews(id) {
+    if (confirm('Tem certeza que deseja excluir esta notícia?')) {
+        showToast('Notícia excluída! (Demonstração)');
+    }
+}
+
+function editNews(id) {
+    showToast('Função de edição em desenvolvimento');
+}
+
+function deleteGalleryItem(id) {
+    if (confirm('Tem certeza que deseja excluir esta foto?')) {
+        showToast('Foto excluída! (Demonstração)');
+    }
+}
+
+function deleteTestimonial(id) {
+    if (confirm('Tem certeza que deseja excluir este depoimento?')) {
+        showToast('Depoimento excluído! (Demonstração)');
+    }
+}
+
+function openEditTestimonialModal(id) {
+    const testimonial = siteData.depoimentos.find(t => t.id === id);
+    if (testimonial) {
+        document.getElementById('editTestimonialName').value = testimonial.nome;
+        document.getElementById('editTestimonialRole').value = testimonial.funcao;
+        document.getElementById('editTestimonialText').value = testimonial.texto;
+        window.editingTestimonialId = id;
+        document.getElementById('editTestimonialModal').classList.add('show');
+    }
+}
+
+function saveTestimonialEdit() {
+    showToast('Depoimento atualizado! (Demonstração)');
+    document.getElementById('editTestimonialModal').classList.remove('show');
+}
 
 // ===== NAVEGAÇÃO =====
-window.showCardsView = function() {
+function showCardsView() {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('cardsView').style.display = 'block';
     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
     const homeLink = document.querySelector('.nav-link[data-panel="home"]');
     if (homeLink) homeLink.classList.add('active');
     document.getElementById('pageTitle').textContent = 'Dashboard';
-};
+}
 
-window.showPanel = function(panelId, panelName) {
+function showPanel(panelId, panelName) {
     document.getElementById('cardsView').style.display = 'none';
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     const panel = document.getElementById(panelId);
     if (panel) panel.classList.add('active');
     document.getElementById('pageTitle').textContent = panelName;
-};
+}
 
-// ===== INICIALIZAÇÃO COM TODOS OS EVENTOS =====
+// ===== INICIALIZAÇÃO =====
 function init() {
-    // Menu lateral
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', () => {
+    // Prevenir todos os links com # e javascript:void(0)
+    document.querySelectorAll('a[href="#"], a[href="javascript:void(0)"]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        });
+    });
+    
+    // Menu mobile toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    if (menuToggle) {
+        menuToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+    }
+    
+    if (overlay) {
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+    }
+    
+    // Sidebar collapse
+    const collapseBtn = document.getElementById('collapseBtn');
+    if (collapseBtn) {
+        collapseBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+    }
+    
+    // Navegação do menu lateral
+    document.querySelectorAll('.nav-link[data-panel]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
             const panel = link.getAttribute('data-panel');
-            if (panel) {
-                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-                const panelNames = {
-                    home: 'Dashboard',
-                    institucional: 'Institucional',
-                    noticias: 'Notícias',
-                    galeria: 'Galeria',
-                    servicos: 'Serviços',
-                    depoimentos: 'Depoimentos',
-                    configuracoes: 'Configurações'
-                };
-                if (panel === 'home') {
-                    window.showCardsView();
-                } else {
-                    window.showPanel(panel + 'Panel', panelNames[panel]);
-                }
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+            
+            const panelNames = {
+                home: 'Dashboard',
+                institucional: 'Institucional',
+                noticias: 'Notícias',
+                galeria: 'Galeria',
+                servicos: 'Serviços',
+                depoimentos: 'Depoimentos',
+                configuracoes: 'Configurações'
+            };
+            
+            if (panel === 'home') {
+                showCardsView();
+            } else {
+                showPanel(panel + 'Panel', panelNames[panel]);
+            }
+            
+            // Fechar menu mobile após navegação
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
             }
         });
     });
-
+    
     // Cards do dashboard
     document.querySelectorAll('.admin-card').forEach(card => {
-        card.addEventListener('click', () => {
+        card.addEventListener('click', (e) => {
+            e.preventDefault();
             const panel = card.getAttribute('data-panel');
             const panelNames = {
                 home: 'Gerenciar Slides',
@@ -2189,90 +2307,217 @@ function init() {
                 depoimentos: 'Depoimentos',
                 configuracoes: 'Configurações'
             };
+            
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             const navLink = document.querySelector(`.nav-link[data-panel="${panel}"]`);
             if (navLink) navLink.classList.add('active');
+            
             if (panel === 'home') {
                 document.getElementById('cardsView').style.display = 'none';
                 document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
                 document.getElementById('homePanel').classList.add('active');
                 document.getElementById('pageTitle').textContent = 'Gerenciar Slides';
             } else {
-                window.showPanel(panel + 'Panel', panelNames[panel]);
+                showPanel(panel + 'Panel', panelNames[panel]);
             }
         });
     });
-
+    
+    // Botões de voltar
+    document.querySelectorAll('.back-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            showCardsView();
+        });
+    });
+    
     // Login
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
-        const errorDiv = document.getElementById('loginError');
-        if (await loginUser(email, password)) {
-            document.getElementById('loginContainer').style.display = 'none';
-            document.getElementById('adminContainer').style.display = 'flex';
-            showToast(`Bem-vindo, ${currentUser.name}!`);
-        } else {
-            errorDiv.style.display = 'flex';
-            setTimeout(() => errorDiv.style.display = 'none', 3000);
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            if (email === 'admin@admin.com' && password === 'admin123') {
+                // Demo login
+                currentUser = { name: 'Administrador', email: email, avatar: null };
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('adminContainer').style.display = 'flex';
+                updateUserInterface();
+                showToast('Bem-vindo, Administrador!');
+            } else if (await loginUser(email, password)) {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('adminContainer').style.display = 'flex';
+                showToast(`Bem-vindo, ${currentUser.name}!`);
+            } else {
+                errorDiv.style.display = 'flex';
+                setTimeout(() => errorDiv.style.display = 'none', 3000);
+            }
+        });
+    }
+    
+    // Logout
+    const logoutBtn = document.getElementById('logoutSidebarBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            logout();
+        });
+    }
+    
+    // Toggle password visibility
+    document.querySelectorAll('.toggle-password').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            if (input) {
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                btn.querySelector('i').classList.toggle('fa-eye');
+                btn.querySelector('i').classList.toggle('fa-eye-slash');
+            }
+        });
+    });
+    
+    // Show/Hide forms
+    const showRegisterLink = document.getElementById('showRegister');
+    const backToLoginLink = document.getElementById('backToLogin');
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+    
+    if (showRegisterLink) {
+        showRegisterLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+        });
+    }
+    
+    if (backToLoginLink) {
+        backToLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+        });
+    }
+    
+    if (forgotPasswordLink) {
+        forgotPasswordLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('forgotPasswordModal').classList.add('show');
+        });
+    }
+    
+    // Modals close
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('show');
+            }
+        });
+    });
+    
+    // Modal close buttons
+    const closeButtons = ['closeServiceModal', 'closeAddServiceModal', 'closeAddSlideModal', 'closeEditSlideModal', 'closeEditTestimonialModal', 'cancelForgot', 'cancelResetBtn'];
+    closeButtons.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) {
+            btn.addEventListener('click', () => {
+                const modal = btn.closest('.modal-overlay');
+                if (modal) modal.classList.remove('show');
+            });
         }
     });
-
-    // Logout
-    document.getElementById('logoutSidebarBtn')?.addEventListener('click', logout);
+    
+    // Add service button
+    const addServiceBtn = document.getElementById('addServiceBtn');
+    if (addServiceBtn) {
+        addServiceBtn.addEventListener('click', openAddServiceModal);
+    }
+    
+    // Add slide button
+    const addSlideBtn = document.getElementById('addSlideBtn');
+    if (addSlideBtn) {
+        addSlideBtn.addEventListener('click', openAddSlideModal);
+    }
+    
+    // Form submissions
+    const addServiceForm = document.getElementById('addServiceFormModal');
+    if (addServiceForm) {
+        addServiceForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            addServiceFromModal();
+        });
+    }
+    
+    const editServiceForm = document.getElementById('editServiceForm');
+    if (editServiceForm) {
+        editServiceForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            saveServiceEdit();
+        });
+    }
+    
+    const addSlideForm = document.getElementById('addSlideFormModal');
+    if (addSlideForm) {
+        addSlideForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            showToast('Slide adicionado! (Demonstração)');
+            document.getElementById('addSlideModal').classList.remove('show');
+        });
+    }
+    
+    const editSlideForm = document.getElementById('editSlideForm');
+    if (editSlideForm) {
+        editSlideForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            saveSlideEdit();
+        });
+    }
+    
+    const editTestimonialForm = document.getElementById('editTestimonialFormModal');
+    if (editTestimonialForm) {
+        editTestimonialForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            saveTestimonialEdit();
+        });
+    }
 }
 
 // ===== START =====
 document.getElementById('cardsView').style.display = 'block';
+
 if (localStorage.getItem('user') && localStorage.getItem('token')) {
-    currentUser = JSON.parse(localStorage.getItem('user'));
-    authToken = localStorage.getItem('token');
-    updateUserInterface();
-    document.getElementById('loginContainer').style.display = 'none';
-    document.getElementById('adminContainer').style.display = 'flex';
-    loadAllData();
+    try {
+        currentUser = JSON.parse(localStorage.getItem('user'));
+        authToken = localStorage.getItem('token');
+        updateUserInterface();
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('adminContainer').style.display = 'flex';
+        loadAllData();
+    } catch(e) {
+        document.getElementById('loginContainer').style.display = 'flex';
+        document.getElementById('adminContainer').style.display = 'none';
+    }
 } else {
     document.getElementById('loginContainer').style.display = 'flex';
     document.getElementById('adminContainer').style.display = 'none';
 }
+
 init();
 
-// Exportar funções globais
-window.openAddServiceModal = () => {
-    document.getElementById('addServiceIcon').value = '';
-    document.getElementById('addServiceTitle').value = '';
-    document.getElementById('addServiceDescription').value = '';
-    document.getElementById('addServiceModal').classList.add('show');
-};
-window.addServiceFromModal = () => {
-    const newService = {
-        icon: document.getElementById('addServiceIcon').value,
-        title: document.getElementById('addServiceTitle').value,
-        description: document.getElementById('addServiceDescription').value
-    };
-    if (newService.icon && newService.title && newService.description) {
-        window.addService(newService);
-        document.getElementById('addServiceModal').classList.remove('show');
-    } else {
-        showToast('Preencha todos os campos!', 'error');
-    }
-};
-document.getElementById('addServiceBtn')?.addEventListener('click', window.openAddServiceModal);
-document.getElementById('addServiceFormModal')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    window.addServiceFromModal();
-});
-document.getElementById('editServiceForm')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    window.saveServiceEdit();
-});
-document.getElementById('closeServiceModal')?.addEventListener('click', () => {
-    document.getElementById('serviceModal')?.classList.remove('show');
-});
-document.getElementById('closeAddServiceModal')?.addEventListener('click', () => {
-    document.getElementById('addServiceModal')?.classList.remove('show');
-});
+// Funções globais necessárias
+window.showCardsView = showCardsView;
+window.openEditServiceModal = openEditServiceModal;
+window.deleteService = deleteService;
+window.openEditSlideModal = openEditSlideModal;
+window.deleteSlide = deleteSlide;
+window.editNews = editNews;
+window.deleteNews = deleteNews;
+window.deleteGalleryItem = deleteGalleryItem;
+window.deleteTestimonial = deleteTestimonial;
+window.openEditTestimonialModal = openEditTestimonialModal;
 </script>
 </body>
 </html>
